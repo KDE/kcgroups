@@ -1,0 +1,16 @@
+maintainer: hchain
+description: control cgroup resources through systemd dbus interface 
+tier: 1
+type: functional
+platforms:
+    - name: Linux
+portingAid: false
+deprecated: false
+libraries:
+ - qmake: KCGroups
+   cmake: "KF5::CGroups"
+cmakename: KF5CGroups
+
+public_lib: true
+group: Frameworks
+subgroup: Tier 1
