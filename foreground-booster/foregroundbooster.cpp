@@ -26,8 +26,12 @@ void ForegroundBooster::onActiveWindowChanged(WId id)
         m_appCache[id] = m_currentApp;
     }
     if (prevApp != m_currentApp) {
-        if (m_currentApp != nullptr) {
-            m_currentApp->setCpuQuota(10);
+        if (prevApp != nullptr) {
+            prevApp->setCpuWeight(OptionalQULongLong());
         }
+        if (m_currentApp != nullptr) {
+            m_currentApp->setCpuWeight(10000);
+        }
+
     }
 }
