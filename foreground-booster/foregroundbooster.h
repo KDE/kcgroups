@@ -5,12 +5,15 @@
 #include <QtGui/qwindowdefs.h>
 
 class KWindowSystem;
+class KWindowInfo;
 class KApplicationScope;
 
 class ForegroundBooster : public QObject
 {
 public:
     ForegroundBooster(QObject *parent = nullptr);
+    ~ForegroundBooster();
+
 public Q_SLOTS:
     void onActiveWindowChanged(WId id);
     void onWindowRemoved(WId id);
@@ -18,7 +21,9 @@ public Q_SLOTS:
 private:
     KWindowSystem *m_kws;
     KApplicationScope *m_currentApp;
-    QHash<WId, KApplicationScope *> m_appCache;
+    KWindowInfo *m_info;
+    QHash<WId, KWindowInfo *> m_infoByWid;
+    QHash<uint, KApplicationScope *> m_appsByPid;
 };
 
 #endif // FOREGROUNDBOOSTER_H
