@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2020 Henri Chain <henri.chain@enioka.com>
+//
+// SPDX-License-Identifier: LGPL-2.1-or-later
+
 #ifndef FOREGROUNDBOOSTER_H
 #define FOREGROUNDBOOSTER_H
 #include <QHash>
@@ -5,19 +9,26 @@
 #include <QtGui/qwindowdefs.h>
 
 class KWindowSystem;
+class KWindowInfo;
 class KApplicationScope;
 
 class ForegroundBooster : public QObject
 {
 public:
     ForegroundBooster(QObject *parent = nullptr);
+    ~ForegroundBooster();
+
 public Q_SLOTS:
     void onActiveWindowChanged(WId id);
+    void onWindowRemoved(WId id);
 
 private:
     KWindowSystem *m_kws;
-    KApplicationScope *m_currentApp;
-    QHash<WId, KApplicationScope *> m_appCache;
+    uint m_currentPid;
+    WId m_currentWid;
+    QHash<WId, KWindowInfo *> m_infoByWid;
+    QHash<uint, KApplicationScope *> m_appsByPid;
+    QMultiHash<uint, WId> m_widsByPid;
 };
 
 #endif // FOREGROUNDBOOSTER_H
