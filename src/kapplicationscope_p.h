@@ -24,7 +24,6 @@ struct Property {
 class KApplicationScopePrivate
 {
 public:
-    KApplicationScopePrivate(uint pid, KApplicationScope *parent);
     KApplicationScopePrivate(const QString &path, const QString &id, KApplicationScope *parent);
     KApplicationScope::ErrorCode m_lastError;
     OptionalQULongLong m_cpuQuota;
@@ -45,11 +44,9 @@ public:
     void stop();
 
 private:
-    KApplicationScopePrivate(KApplicationScope *parent);
     KApplicationScope *q_ptr;
     org::freedesktop::systemd1::Unit *m_unit;
     org::freedesktop::DBus::Properties *m_properties;
-    void init(const QString &path, const QString &id);
     void handleGetAllCallFinished(QDBusPendingCallWatcher *call);
     void handleGetIdFinished(QDBusPendingCallWatcher *call);
     void handleVoidCallFinished(QDBusPendingCallWatcher *call, KApplicationScope::ErrorCode code);

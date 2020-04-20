@@ -6,7 +6,6 @@
 #include "kapplicationscope.h"
 #include "kapplicationscope_p.h"
 #include "kcgroups_debug.h"
-#include "managerinterface.h"
 #include <limits>
 
 static const Property<OptionalQULongLong> cpuQuotaProp = {&KApplicationScopePrivate::m_cpuQuota,
@@ -66,12 +65,6 @@ static const QHash<QString, const Property<OptionalQULongLong> *> qullProps = {
     {memoryMaxProp.systemdName, &memoryMaxProp},
     {memorySwapMaxProp.systemdName, &memorySwapMaxProp},
 };
-
-KApplicationScope::KApplicationScope(uint pid, QObject *parent)
-    : QObject(parent)
-    , d_ptr(new KApplicationScopePrivate(pid, this))
-{
-}
 
 KApplicationScope::KApplicationScope(const QString &path, const QString &id, QObject *parent)
     : QObject(parent)
@@ -197,44 +190,17 @@ KApplicationScope::~KApplicationScope()
 static const auto systemd1 = QStringLiteral("org.freedesktop.systemd1");
 static const auto systemd1Scope = QStringLiteral("org.freedesktop.systemd1.Scope");
 static const auto systemd1Unit = QStringLiteral("org.freedesktop.systemd1.Unit");
-static const auto systemd1Path = QStringLiteral("/org/freedesktop/systemd1");
 
-KApplicationScopePrivate::KApplicationScopePrivate(KApplicationScope *parent)
+KApplicationScopePrivate::KApplicationScopePrivate(const QString &path, const QString &id, KApplicationScope *parent)
     : m_lastError(KApplicationScope::NoError)
+    , m_path(path)
+    , m_id(id)
     , q_ptr(parent)
+    , m_unit(new org::freedesktop::systemd1::Unit(systemd1, path, QDBusConnection::sessionBus(), q_ptr))
+    , m_properties(new org::freedesktop::DBus::Properties(systemd1, path, QDBusConnection::sessionBus(), q_ptr))
 {
     qDBusRegisterMetaType<QVariantMultiMap>();
     qDBusRegisterMetaType<QVariantMultiItem>();
-}
-
-KApplicationScopePrivate::KApplicationScopePrivate(uint pid, KApplicationScope *parent)
-    : KApplicationScopePrivate::KApplicationScopePrivate(parent)
-{
-    org::freedesktop::systemd1::Manager manager(systemd1, systemd1Path, QDBusConnection::sessionBus(), q_ptr);
-    auto reply = manager.GetUnitByPID(pid);
-    reply.waitForFinished();
-
-    if (reply.isError()) {
-        setError(KApplicationScope::PIDError, reply.error().message());
-        init(QString(), QString());
-    } else {
-        qCDebug(KCGROUPS_LOG) << "GetUnitByPID finished async";
-        init(reply.argumentAt<0>().path(), QString());
-    }
-}
-
-KApplicationScopePrivate::KApplicationScopePrivate(const QString &path, const QString &id, KApplicationScope *parent)
-    : KApplicationScopePrivate::KApplicationScopePrivate(parent)
-{
-    init(path, id);
-}
-
-void KApplicationScopePrivate::init(const QString &path, const QString &id)
-{
-    m_path = path;
-    m_id = id;
-    m_unit = new org::freedesktop::systemd1::Unit(systemd1, path, QDBusConnection::sessionBus(), q_ptr);
-    m_properties = new org::freedesktop::DBus::Properties(systemd1, path, QDBusConnection::sessionBus(), q_ptr);
 
     // Try to fill cache for all properties.
     const auto *getAllWatcher = new QDBusPendingCallWatcher(m_properties->GetAll(systemd1Scope), q_ptr);
