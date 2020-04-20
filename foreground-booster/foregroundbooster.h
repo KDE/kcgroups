@@ -13,6 +13,7 @@ public:
     ForegroundBooster(QObject *parent = nullptr);
 public Q_SLOTS:
     void onActiveWindowChanged(WId id);
+    void onWindowRemoved(WId id);
 
 private:
     KWindowSystem *m_kws;
