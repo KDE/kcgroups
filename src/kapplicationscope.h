@@ -223,6 +223,11 @@ public:
         CacheFillError,
 
         /**
+         * Error Getting unit from PID
+         */
+        PIDError,
+
+        /**
          * Error during stop() operation
          */
         StopFailedError
@@ -243,6 +248,14 @@ public:
      * @param parent: parent QObject
      */
     explicit KApplicationScope(const QString &path, const QString &id, QObject *parent = nullptr);
+
+    /**
+      * @brief Use when only PID is known
+      * @param pid: the process ID
+      * @param parent: parent Qbject
+      */
+    explicit KApplicationScope(uint pid, QObject *parent = nullptr);
+
     ~KApplicationScope() override;
 
     QString path() const;
