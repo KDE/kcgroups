@@ -1,11 +1,12 @@
 #ifndef FOREGROUNDBOOSTER_H
 #define FOREGROUNDBOOSTER_H
-#include <QtGui/qwindowdefs.h>
-#include <QObject>
 #include <QHash>
+#include <QObject>
+#include <QtGui/qwindowdefs.h>
 
 class KWindowSystem;
 class KApplicationScope;
+class OrgFreedesktopSystemd1ManagerInterface;
 
 class ForegroundBooster : public QObject
 {
@@ -17,7 +18,9 @@ public Q_SLOTS:
 private:
     KWindowSystem *m_kws;
     KApplicationScope *m_currentApp;
-    QHash<WId, KApplicationScope*> m_appCache;
+    QHash<WId, KApplicationScope *> m_appCache;
+    OrgFreedesktopSystemd1ManagerInterface *m_manager;
+    KApplicationScope *getAppFromPid(uint pid);
 };
 
 #endif // FOREGROUNDBOOSTER_H
