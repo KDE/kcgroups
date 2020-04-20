@@ -6,7 +6,6 @@
 
 class KWindowSystem;
 class KApplicationScope;
-class OrgFreedesktopSystemd1ManagerInterface;
 
 class ForegroundBooster : public QObject
 {
@@ -19,8 +18,6 @@ private:
     KWindowSystem *m_kws;
     KApplicationScope *m_currentApp;
     QHash<WId, KApplicationScope *> m_appCache;
-    OrgFreedesktopSystemd1ManagerInterface *m_manager;
-    KApplicationScope *getAppFromPid(uint pid);
 };
 
 #endif // FOREGROUNDBOOSTER_H

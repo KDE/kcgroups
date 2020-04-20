@@ -6,6 +6,7 @@
 #include "kapplicationscope.h"
 #include "kapplicationscope_p.h"
 #include "kcgroups_debug.h"
+#include "managerinterface.h"
 #include <limits>
 
 static const Property<OptionalQULongLong> cpuQuotaProp = {&KApplicationScopePrivate::m_cpuQuota,
@@ -190,6 +191,21 @@ KApplicationScope::~KApplicationScope()
 static const auto systemd1 = QStringLiteral("org.freedesktop.systemd1");
 static const auto systemd1Scope = QStringLiteral("org.freedesktop.systemd1.Scope");
 static const auto systemd1Unit = QStringLiteral("org.freedesktop.systemd1.Unit");
+static const auto systemd1Path = QStringLiteral("/org/freedesktop/systemd1");
+
+KApplicationScope *KApplicationScope::fromPid(uint pid, QObject *parent)
+{
+    org::freedesktop::systemd1::Manager manager(systemd1, systemd1Path, QDBusConnection::sessionBus());
+    auto reply = manager.GetUnitByPID(pid);
+    reply.waitForFinished();
+
+    if (reply.isError()) {
+        qCWarning(KCGROUPS_LOG) << "Cannot get app from pid:" << reply.error().message();
+        return nullptr;
+    } else {
+        return new KApplicationScope(reply.argumentAt<0>().path(), parent);
+    }
+}
 
 KApplicationScopePrivate::KApplicationScopePrivate(const QString &path, const QString &id, KApplicationScope *parent)
     : m_lastError(KApplicationScope::NoError)
