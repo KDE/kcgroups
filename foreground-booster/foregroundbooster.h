@@ -1,8 +1,8 @@
 #ifndef FOREGROUNDBOOSTER_H
 #define FOREGROUNDBOOSTER_H
-#include <QtGui/qwindowdefs.h>
-#include <QObject>
 #include <QHash>
+#include <QObject>
+#include <QtGui/qwindowdefs.h>
 
 class KWindowSystem;
 class KApplicationScope;
@@ -17,7 +17,7 @@ public Q_SLOTS:
 private:
     KWindowSystem *m_kws;
     KApplicationScope *m_currentApp;
-    QHash<WId, KApplicationScope*> m_appCache;
+    QHash<WId, KApplicationScope *> m_appCache;
 };
 
 #endif // FOREGROUNDBOOSTER_H

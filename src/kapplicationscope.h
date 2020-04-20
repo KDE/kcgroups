@@ -250,6 +250,15 @@ public:
      * @param parent: parent QObject
      */
     explicit KApplicationScope(const QString &path, const QString &id, QObject *parent = nullptr);
+
+    /**
+     * @brief Use when only PID is known
+     * @param pid: process ID
+     * @param parent: parent QObject
+     * @return a new KApplicationScope, or null in case of failure (such as if process is not managed by systemd)
+     */
+    static KApplicationScope *fromPid(uint pid, QObject *parent = nullptr);
+
     ~KApplicationScope() override;
 
     QString path() const;
