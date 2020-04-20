@@ -28,6 +28,7 @@ public:
     KApplicationScope::ErrorCode m_lastError;
     OptionalQULongLong m_cpuQuota;
     OptionalQULongLong m_cpuQuotaPeriod;
+    OptionalQULongLong m_cpuWeight;
     OptionalQULongLong m_memoryLow;
     OptionalQULongLong m_memoryHigh;
     OptionalQULongLong m_memoryMin;

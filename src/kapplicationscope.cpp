@@ -20,6 +20,12 @@ static const Property<OptionalQULongLong> cpuQuotaPeriodProp = {&KApplicationSco
                                                                 true,
                                                                 std::numeric_limits<qulonglong>::max()};
 
+static const Property<OptionalQULongLong> cpuWeightProp = {&KApplicationScopePrivate::m_cpuWeight,
+                                                                &KApplicationScope::cpuWeightChanged,
+                                                                QStringLiteral("CPUWeight"),
+                                                                true,
+                                                                std::numeric_limits<qulonglong>::max()};
+
 static const Property<OptionalQULongLong> memoryLowProp = {&KApplicationScopePrivate::m_memoryLow,
                                                            &KApplicationScope::memoryLowChanged,
                                                            QStringLiteral("MemoryLow"),
@@ -101,6 +107,11 @@ OptionalQULongLong KApplicationScope::cpuQuotaPeriod() const
     return d_ptr->getProperty<OptionalQULongLong>(cpuQuotaPeriodProp);
 }
 
+OptionalQULongLong KApplicationScope::cpuWeight() const
+{
+    return d_ptr->getProperty<OptionalQULongLong>(cpuWeightProp);
+}
+
 OptionalQULongLong KApplicationScope::memoryLow() const
 {
     return d_ptr->getProperty<OptionalQULongLong>(memoryLowProp);
@@ -134,6 +145,11 @@ void KApplicationScope::setCpuQuota(const OptionalQULongLong &quota)
 void KApplicationScope::setCpuQuotaPeriod(const OptionalQULongLong &period)
 {
     d_ptr->trySetProperty<OptionalQULongLong>(cpuQuotaPeriodProp, period);
+}
+
+void KApplicationScope::setCpuWeight(const OptionalQULongLong &weight)
+{
+    d_ptr->trySetProperty<OptionalQULongLong>(cpuWeightProp, weight);
 }
 
 void KApplicationScope::setMemoryLow(const OptionalQULongLong &memoryLow)
