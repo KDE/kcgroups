@@ -48,6 +48,7 @@ ecm_setup_version(
     1)
 
 add_subdirectory(src)
+add_subdirectory(foreground-booster)
 if(BUILD_TESTING)
     add_subdirectory(tests)
 endif()
