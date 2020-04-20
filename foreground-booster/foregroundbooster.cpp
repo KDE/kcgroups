@@ -12,7 +12,8 @@ ForegroundBooster::ForegroundBooster(QObject *parent)
     connect(m_kws, &KWindowSystem::windowRemoved, this, &ForegroundBooster::onWindowRemoved);
 }
 
-void ForegroundBooster::onWindowRemoved(WId id) {
+void ForegroundBooster::onWindowRemoved(WId id)
+{
     const auto app = m_appCache.take(id);
     if (app) {
         qDebug() << "Removing app from cache";
