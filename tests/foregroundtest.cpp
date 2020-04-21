@@ -7,34 +7,51 @@
 #include <QProcess>
 #include <QTimer>
 
+class ForegroundTester : public QObject
+{
+public:
+    ForegroundTester(QObject *parent)
+        : QObject(parent)
+        , m_booster(this)
+        , m_left(this)
+        , m_right(this)
+    {
+        m_booster.setProgram(QStringLiteral("./foreground_booster"));
+        m_booster.setProcessChannelMode(QProcess::ForwardedChannels);
+        m_booster.start();
+
+        m_left.setProgram(QStringLiteral("systemd-run"));
+        m_left.setArguments(
+            {QStringLiteral("--user"), QStringLiteral("--scope"), QStringLiteral("./spinner"), QStringLiteral("left")});
+        m_left.setProcessChannelMode(QProcess::ForwardedChannels);
+        m_left.start();
+
+        m_right.setProgram(QStringLiteral("systemd-run"));
+        m_right.setArguments({QStringLiteral("--user"),
+                              QStringLiteral("--scope"),
+                              QStringLiteral("./spinner"),
+                              QStringLiteral("right")});
+        m_right.setProcessChannelMode(QProcess::ForwardedChannels);
+        m_right.start();
+    }
+public Q_SLOTS:
+    void onStopping()
+    {
+        m_left.kill();
+        m_right.kill();
+        m_booster.kill();
+    }
+
+private:
+    QProcess m_booster;
+    QProcess m_left;
+    QProcess m_right;
+};
+
 int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);
-    //    QQuickView view;
-    //    view.setSource(QUrl(QStringLiteral("qrc:spinner.qml")));
-    //    view.show();
-    QProcess booster(&app);
-    booster.setProgram(QStringLiteral("./foreground_booster"));
-    booster.setProcessChannelMode(QProcess::ForwardedChannels);
-    booster.start();
-    qDebug() << booster.error() << booster.errorString();
-
-    QProcess left(&app);
-    left.setProgram(QStringLiteral("./spinner"));
-    left.setArguments({QStringLiteral("left")});
-    left.setProcessChannelMode(QProcess::ForwardedChannels);
-
-    //    left.arguments().append(QStringLiteral("./spinner"));
-    left.start();
-    qDebug() << left.error() << left.errorString();
-
-    QProcess right(&app);
-    right.setProgram(QStringLiteral("./spinner"));
-    right.setArguments({QStringLiteral("right")});
-    right.setProcessChannelMode(QProcess::ForwardedChannels);
-    right.start();
-    qDebug() << right.error() << right.errorString();
-
-//    app.connect(&QCoreApplication::aboutToQuit, [](){});
+    ForegroundTester tester(&app);
+    QObject::connect(&app, &QCoreApplication::aboutToQuit, &tester, &ForegroundTester::onStopping);
     return app.exec();
 }

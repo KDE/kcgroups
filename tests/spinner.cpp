@@ -5,26 +5,29 @@
 #include <QDebug>
 #include <QElapsedTimer>
 #include <QGuiApplication>
+#include <QQmlContext>
 #include <QQuickView>
 #include <QTimer>
-#include <QQmlContext>
 
 class CPUHog : public QObject
 {
 public:
     CPUHog(QObject *parent)
-        : QObject(parent), frame(0)
+        : QObject(parent)
+        , frame(0)
     {
     }
 public Q_SLOTS:
     void onBeforeRendering()
     {
         frame++;
-        for (qlonglong i = 0; i < 100000000; i++) {
-            if (i % 10000000 == 0){
-            qWarning() << frame << i;}
+        for (qlonglong i = 0; i < 30000000; i++) {
+            if (i % 10000000 == 0 && frame % 100 == 0) {
+                qWarning() << frame << i;
+            }
         }
     }
+
 private:
     qlonglong frame;
 };
