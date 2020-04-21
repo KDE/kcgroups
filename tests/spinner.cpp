@@ -41,24 +41,6 @@ int main(int argc, char **argv)
     auto *ctxt = view.rootContext();
     ctxt->setContextProperty(QStringLiteral("name"), app.arguments().value(1, QStringLiteral("none")));
     view.show();
-    //    QTimer timer(&app);
-    //    timer.setInterval(1);
-    //    timer.setTimerType(Qt::PreciseTimer);
-    //    QElapsedTimer elapsed();
-    //    qlonglong j =0;
-    //    timer.callOnTimeout([&j]() {
-    //        qWarning() << "spinning" << j;
-    //        j++;
-    //        for (qlonglong i=0; i<10000000000; i++) {
-    ////            qWarning() <<i;
-
-    //        }
-    ////        int i = 0;
-    ////        while (true) {
-    ////            i++;
-    ////        }
-    //    });
-    //    timer.start();
     CPUHog hog(&app);
     QObject::connect(&view, &QQuickView::beforeRendering, &hog, &CPUHog::onBeforeRendering, Qt::DirectConnection);
     return app.exec();
