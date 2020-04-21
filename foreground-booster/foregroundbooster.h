@@ -21,9 +21,10 @@ public Q_SLOTS:
 private:
     KWindowSystem *m_kws;
     uint m_currentPid;
-    WId currentWid;
+    WId m_currentWid;
     QHash<WId, KWindowInfo *> m_infoByWid;
     QHash<uint, KApplicationScope *> m_appsByPid;
+    QMultiHash<uint, WId> m_widsByPid;
 };
 
 #endif // FOREGROUNDBOOSTER_H

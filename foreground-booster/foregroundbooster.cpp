@@ -24,18 +24,14 @@ void ForegroundBooster::onWindowRemoved(WId wid)
     if (info) {
         const auto pid = info->pid();
         const auto app = m_appsByPid.value(pid);
+        m_widsByPid.remove(pid, wid);
 
-        if (app) {
-            if (std::any_of(
-                    m_infoByWid.constBegin(), m_infoByWid.constEnd(), [info, pid](const KWindowInfo *otherInfo) {
-                        return otherInfo != info && otherInfo->pid() == pid;
-                    })) {
-                qDebug() << app->id() << "still has at least one window, not deleting";
-            } else {
-                qDebug() << "Removing" << app->id() << "from cache";
-                m_appsByPid.remove(pid);
-                delete app;
-            }
+        if (m_widsByPid.contains(pid)) {
+            qDebug() << (app ? app->id() : QString::number(pid)) << "still has at least one window, not deleting";
+        } else if (app) {
+            qDebug() << "Removing" << app->id() << "from cache";
+            m_appsByPid.remove(pid);
+            delete app;
         }
         delete info;
     }
@@ -43,13 +39,15 @@ void ForegroundBooster::onWindowRemoved(WId wid)
 
 void ForegroundBooster::onActiveWindowChanged(WId wid)
 {
-    const auto prevInfo = m_infoByWid.value(currentWid);
+    const auto prevInfo = m_infoByWid.value(m_currentWid);
     const auto prevApp = m_appsByPid.value(m_currentPid);
+    qDebug() << "switching from" << m_currentWid << "to" << wid;
 
     auto info = m_infoByWid[wid];
     if (!info) {
         info = new KWindowInfo(wid, NET::WMPid | NET::WMName | NET::WMWindowType, NET::WM2DesktopFileName);
         m_infoByWid[wid] = info;
+        m_widsByPid.insert(info->pid(), wid);
     }
 
     if (!info->valid()) {
@@ -89,12 +87,12 @@ void ForegroundBooster::onActiveWindowChanged(WId wid)
             currentApp->setCpuWeight(10000);
         }
     } else {
-        if (wid == currentWid) {
+        if (wid == m_currentWid) {
             qDebug() << "Same app, same window, weird";
         } else {
             qDebug() << "Same app but different window" << (prevInfo ? prevInfo->name() : QStringLiteral("[none]"))
                      << info->name();
         }
     }
-    currentWid = wid;
+    m_currentWid = wid;
 }
