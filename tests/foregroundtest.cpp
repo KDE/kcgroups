@@ -13,39 +13,46 @@ public:
     ForegroundTester(QObject *parent)
         : QObject(parent)
         , m_booster(this)
-        , m_left(this)
-        , m_right(this)
+        , m_managed1(this)
+        , m_managed2(this)
     {
         m_booster.setProgram(QStringLiteral("./foreground_booster"));
         m_booster.setProcessChannelMode(QProcess::ForwardedChannels);
-        m_booster.start();
 
-        m_left.setProgram(QStringLiteral("systemd-run"));
-        m_left.setArguments(
-            {QStringLiteral("--user"), QStringLiteral("--scope"), QStringLiteral("./spinner"), QStringLiteral("left")});
-        m_left.setProcessChannelMode(QProcess::ForwardedChannels);
-        m_left.start();
+        m_unmanaged.setProgram(QStringLiteral("./spinner"));
+        m_unmanaged.setArguments({QStringLiteral("unmanaged")});
 
-        m_right.setProgram(QStringLiteral("systemd-run"));
-        m_right.setArguments({QStringLiteral("--user"),
-                              QStringLiteral("--scope"),
-                              QStringLiteral("./spinner"),
-                              QStringLiteral("right")});
-        m_right.setProcessChannelMode(QProcess::ForwardedChannels);
-        m_right.start();
+        m_managed1.setProgram(QStringLiteral("systemd-run"));
+        m_managed1.setArguments({QStringLiteral("--user"),
+                                 QStringLiteral("--scope"),
+                                 QStringLiteral("./spinner"),
+                                 QStringLiteral("managed 1")});
+        m_managed1.setProcessChannelMode(QProcess::ForwardedChannels);
+
+        m_managed2.setProgram(QStringLiteral("systemd-run"));
+        m_managed2.setArguments({QStringLiteral("--user"),
+                                 QStringLiteral("--scope"),
+                                 QStringLiteral("./spinner"),
+                                 QStringLiteral("managed 2")});
+        m_managed2.setProcessChannelMode(QProcess::ForwardedChannels);
+        m_unmanaged.start();
+        QTimer::singleShot(100, [this]() { m_managed1.start(); });
+        QTimer::singleShot(200, [this]() { m_managed2.start(); });
+        QTimer::singleShot(300, [this]() { m_booster.start(); });
     }
 public Q_SLOTS:
     void onStopping()
     {
-        m_left.kill();
-        m_right.kill();
+        m_managed1.kill();
+        m_managed2.kill();
         m_booster.kill();
     }
 
 private:
     QProcess m_booster;
-    QProcess m_left;
-    QProcess m_right;
+    QProcess m_managed1;
+    QProcess m_managed2;
+    QProcess m_unmanaged;
 };
 
 int main(int argc, char **argv)

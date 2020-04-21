@@ -21,8 +21,8 @@ public Q_SLOTS:
     void onBeforeRendering()
     {
         frame++;
-        for (qlonglong i = 0; i < 30000000; i++) {
-            if (i % 10000000 == 0 && frame % 100 == 0) {
+        for (qlonglong i = 0; i < 2000000; i++) {
+            if (i % 1000000 == 0 && frame % 100 == 0) {
                 qWarning() << frame << i;
             }
         }
