@@ -20,8 +20,8 @@ public Q_SLOTS:
 
 private:
     KWindowSystem *m_kws;
-    KApplicationScope *m_currentApp;
-    KWindowInfo *m_info;
+    uint m_currentPid;
+    WId currentWid;
     QHash<WId, KWindowInfo *> m_infoByWid;
     QHash<uint, KApplicationScope *> m_appsByPid;
 };
