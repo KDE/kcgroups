@@ -7,6 +7,7 @@
 #include <QGuiApplication>
 #include <QQuickView>
 #include <QTimer>
+#include <QQmlContext>
 
 class CPUHog : public QObject
 {
@@ -34,6 +35,8 @@ int main(int argc, char **argv)
     qWarning() << "SPINNER" << app.arguments();
     QQuickView view;
     view.setSource(QUrl(QStringLiteral("qrc:spinner.qml")));
+    auto *ctxt = view.rootContext();
+    ctxt->setContextProperty(QStringLiteral("name"), app.arguments().value(1, QStringLiteral("none")));
     view.show();
     //    QTimer timer(&app);
     //    timer.setInterval(1);
