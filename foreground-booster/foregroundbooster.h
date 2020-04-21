@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2020 Henri Chain <henri.chain@enioka.com>
+//
+// SPDX-License-Identifier: LGPL-2.1-or-later
+
 #ifndef FOREGROUNDBOOSTER_H
 #define FOREGROUNDBOOSTER_H
 #include <QHash>

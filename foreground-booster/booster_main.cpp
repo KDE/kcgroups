@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2020 Henri Chain <henri.chain@enioka.com>
+//
+// SPDX-License-Identifier: LGPL-2.1-or-later
+
 #include "foregroundbooster.h"
 #include "kcgroups_debug.h"
 #include <QGuiApplication>
