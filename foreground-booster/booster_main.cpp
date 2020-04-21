@@ -10,6 +10,7 @@
 
 int main (int argc, char **argv) {
     QLoggingCategory::setFilterRules(QStringLiteral("kf5.kcgroups.debug=true"));
+    QGuiApplication::setDesktopSettingsAware(false);
     QGuiApplication app(argc, argv);
     ForegroundBooster booster(&app);
     return app.exec();
