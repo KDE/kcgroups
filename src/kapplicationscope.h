@@ -161,11 +161,18 @@ class KCGROUPS_EXPORT KApplicationScope : public QObject
     Q_PROPERTY(OptionalQULongLong cpuQuotaPeriod READ cpuQuotaPeriod WRITE setCpuQuotaPeriod NOTIFY cpuQuotaPeriodChanged)
 
     /**
-    * @brief cpu time weight. Between 1 and 10000. Defaults to 100.
-    * @accessors cpuQuotaPeriod(), setCpuQuotaPeriod()
-    * @notifySignal cpuQuotaPeriodChanged()
-    */
-   Q_PROPERTY(OptionalQULongLong cpuWeight READ cpuWeight WRITE setCpuWeight NOTIFY cpuWeightChanged)
+     * @brief cpu time weight. Between 1 and 10000. Defaults to 100.
+     * @accessors cpuQuotaPeriod(), setCpuQuotaPeriod()
+     * @notifySignal cpuQuotaPeriodChanged()
+     */
+    Q_PROPERTY(OptionalQULongLong cpuWeight READ cpuWeight WRITE setCpuWeight NOTIFY cpuWeightChanged)
+
+    /**
+     * @brief Overall block I/O weight. Between 1 and 10000. Defaults to 100.
+     * @accessors cpuQuotaPeriod(), setCpuQuotaPeriod()
+     * @notifySignal cpuQuotaPeriodChanged()
+     */
+    Q_PROPERTY(OptionalQULongLong ioWeight READ ioWeight WRITE setIoWeight NOTIFY ioWeightChanged)
 
     /**
      * @brief best-effort memory usage protection (in bytes) of all executed processes within the application.
@@ -253,6 +260,7 @@ public:
     OptionalQULongLong cpuQuota() const;
     OptionalQULongLong cpuQuotaPeriod() const;
     OptionalQULongLong cpuWeight() const;
+    OptionalQULongLong ioWeight() const;
     OptionalQULongLong memoryLow() const;
     OptionalQULongLong memoryHigh() const;
     OptionalQULongLong memoryMin() const;
@@ -301,6 +309,12 @@ Q_SIGNALS:
      * @param weight: the new weight value
      */
     void cpuWeightChanged(const OptionalQULongLong &weight);
+
+    /**
+     * @brief emitted when the io weight has changed
+     * @param weight: the new weight value
+     */
+    void ioWeightChanged(const OptionalQULongLong &weight);
 
     /**
      * @brief emitted when memoryLow has changed
@@ -355,6 +369,12 @@ public Q_SLOTS:
      * @param weight: value to set
      */
     void setCpuWeight(const OptionalQULongLong &weight);
+
+    /**
+     * @brief set ioWeight
+     * @param weight: value to set
+     */
+    void setIoWeight(const OptionalQULongLong &weight);
 
     /**
      * @brief set memoryLow

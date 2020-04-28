@@ -21,10 +21,16 @@ static const Property<OptionalQULongLong> cpuQuotaPeriodProp = {&KApplicationSco
                                                                 std::numeric_limits<qulonglong>::max()};
 
 static const Property<OptionalQULongLong> cpuWeightProp = {&KApplicationScopePrivate::m_cpuWeight,
-                                                                &KApplicationScope::cpuWeightChanged,
-                                                                QStringLiteral("CPUWeight"),
-                                                                true,
-                                                                std::numeric_limits<qulonglong>::max()};
+                                                           &KApplicationScope::cpuWeightChanged,
+                                                           QStringLiteral("CPUWeight"),
+                                                           true,
+                                                           std::numeric_limits<qulonglong>::max()};
+
+static const Property<OptionalQULongLong> ioWeightProp = {&KApplicationScopePrivate::m_ioWeight,
+                                                          &KApplicationScope::ioWeightChanged,
+                                                          QStringLiteral("IOWeight"),
+                                                          true,
+                                                          std::numeric_limits<qulonglong>::max()};
 
 static const Property<OptionalQULongLong> memoryLowProp = {&KApplicationScopePrivate::m_memoryLow,
                                                            &KApplicationScope::memoryLowChanged,
@@ -59,6 +65,8 @@ static const Property<OptionalQULongLong> memorySwapMaxProp = {&KApplicationScop
 static const QHash<QString, const Property<OptionalQULongLong> *> qullProps = {
     {cpuQuotaProp.systemdName, &cpuQuotaProp},
     {cpuQuotaPeriodProp.systemdName, &cpuQuotaPeriodProp},
+    {cpuWeightProp.systemdName, &cpuWeightProp},
+    {ioWeightProp.systemdName, &ioWeightProp},
     {memoryLowProp.systemdName, &memoryLowProp},
     {memoryHighProp.systemdName, &memoryHighProp},
     {memoryMinProp.systemdName, &memoryMinProp},
@@ -112,6 +120,11 @@ OptionalQULongLong KApplicationScope::cpuWeight() const
     return d_ptr->getProperty<OptionalQULongLong>(cpuWeightProp);
 }
 
+OptionalQULongLong KApplicationScope::ioWeight() const
+{
+    return d_ptr->getProperty<OptionalQULongLong>(ioWeightProp);
+}
+
 OptionalQULongLong KApplicationScope::memoryLow() const
 {
     return d_ptr->getProperty<OptionalQULongLong>(memoryLowProp);
@@ -150,6 +163,11 @@ void KApplicationScope::setCpuQuotaPeriod(const OptionalQULongLong &period)
 void KApplicationScope::setCpuWeight(const OptionalQULongLong &weight)
 {
     d_ptr->trySetProperty<OptionalQULongLong>(cpuWeightProp, weight);
+}
+
+void KApplicationScope::setIoWeight(const OptionalQULongLong &weight)
+{
+    d_ptr->trySetProperty<OptionalQULongLong>(ioWeightProp, weight);
 }
 
 void KApplicationScope::setMemoryLow(const OptionalQULongLong &memoryLow)

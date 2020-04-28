@@ -29,6 +29,7 @@ public:
     OptionalQULongLong m_cpuQuota;
     OptionalQULongLong m_cpuQuotaPeriod;
     OptionalQULongLong m_cpuWeight;
+    OptionalQULongLong m_ioWeight;
     OptionalQULongLong m_memoryLow;
     OptionalQULongLong m_memoryHigh;
     OptionalQULongLong m_memoryMin;
