@@ -33,7 +33,7 @@ class KApplicationScopePrivate;
          @brief Whether there is currently a value defined                                                             \
          @accessors hasValue()                                                                                         \
          */                                                                                                            \
-        Q_PROPERTY(T hasValue READ hasValue)                                                                           \
+        Q_PROPERTY(bool hasValue READ hasValue)                                                                        \
                                                                                                                        \
     public:                                                                                                            \
         /**                                                                                                            \
@@ -65,7 +65,7 @@ class KApplicationScopePrivate;
          @brief whether a value is currently set                                                                       \
          @return true if a value is present, false otherwise                                                           \
          */                                                                                                            \
-        T hasValue()                                                                                                   \
+        bool hasValue()                                                                                                \
         {                                                                                                              \
             return static_cast<bool>(*this);                                                                           \
         }                                                                                                              \
