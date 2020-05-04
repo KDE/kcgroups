@@ -35,18 +35,17 @@ inline const QDBusArgument &operator>>(const QDBusArgument &argument, DBusUnit &
 }
 
 /**
- * CGroupDBusBlockIODeviceWeight
+ * IoDeviceWeight
  */
-using CGroupDBusBlockIODeviceWeight = struct CGroupDBusBlockIODeviceWeight {
+using DeviceWeight = struct DeviceWeight {
     QString path;
     qulonglong weight;
 };
-Q_DECLARE_METATYPE(CGroupDBusBlockIODeviceWeight)
-using CGroupDBusBlockIODeviceWeightList = QList<CGroupDBusBlockIODeviceWeight>;
-Q_DECLARE_METATYPE(CGroupDBusBlockIODeviceWeightList)
+Q_DECLARE_METATYPE(DeviceWeight)
+using WeightsByDevice = QList<DeviceWeight>;
+Q_DECLARE_METATYPE(WeightsByDevice)
 
-inline QDBusArgument &operator<<(QDBusArgument &argument,
-                                 const CGroupDBusBlockIODeviceWeight &cGroupBlockIODeviceWeight)
+inline QDBusArgument &operator<<(QDBusArgument &argument, const DeviceWeight &cGroupBlockIODeviceWeight)
 {
     argument.beginStructure();
     argument << cGroupBlockIODeviceWeight.path << cGroupBlockIODeviceWeight.weight;
@@ -54,13 +53,17 @@ inline QDBusArgument &operator<<(QDBusArgument &argument,
     return argument;
 }
 
-inline const QDBusArgument &operator>>(const QDBusArgument &argument,
-                                       CGroupDBusBlockIODeviceWeight &cGroupBlockIODeviceWeight)
+inline const QDBusArgument &operator>>(const QDBusArgument &argument, DeviceWeight &cGroupBlockIODeviceWeight)
 {
     argument.beginStructure();
     argument >> cGroupBlockIODeviceWeight.path >> cGroupBlockIODeviceWeight.weight;
     argument.endStructure();
     return argument;
+}
+
+inline bool operator==(const DeviceWeight &lhs, DeviceWeight &rhs)
+{
+    return lhs.path == rhs.path && lhs.weight == rhs.weight;
 }
 
 /**

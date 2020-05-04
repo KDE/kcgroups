@@ -32,6 +32,11 @@ static const Property<OptionalQULongLong> ioWeightProp = {&KApplicationScopePriv
                                                           true,
                                                           std::numeric_limits<qulonglong>::max()};
 
+static const Property<OptionalWeightsByDevice> ioDeviceWeightProp = {&KApplicationScopePrivate::m_ioDeviceWeight,
+                                                                    &KApplicationScope::ioDeviceWeightChanged,
+                                                                    QStringLiteral("IODeviceWeight"),
+                                                                    false};
+
 static const Property<OptionalQULongLong> memoryLowProp = {&KApplicationScopePrivate::m_memoryLow,
                                                            &KApplicationScope::memoryLowChanged,
                                                            QStringLiteral("MemoryLow"),
@@ -125,6 +130,11 @@ OptionalQULongLong KApplicationScope::ioWeight() const
     return d_ptr->getProperty<OptionalQULongLong>(ioWeightProp);
 }
 
+OptionalWeightsByDevice KApplicationScope::ioDeviceWeight() const
+{
+    return d_ptr->getProperty<OptionalWeightsByDevice>(ioDeviceWeightProp);
+}
+
 OptionalQULongLong KApplicationScope::memoryLow() const
 {
     return d_ptr->getProperty<OptionalQULongLong>(memoryLowProp);
@@ -168,6 +178,11 @@ void KApplicationScope::setCpuWeight(const OptionalQULongLong &weight)
 void KApplicationScope::setIoWeight(const OptionalQULongLong &weight)
 {
     d_ptr->trySetProperty<OptionalQULongLong>(ioWeightProp, weight);
+}
+
+void KApplicationScope::setIoDeviceWeight(const OptionalWeightsByDevice &weights)
+{
+    d_ptr->trySetProperty<OptionalWeightsByDevice>(ioDeviceWeightProp, weights);
 }
 
 void KApplicationScope::setMemoryLow(const OptionalQULongLong &memoryLow)
@@ -249,7 +264,7 @@ template<typename T>
 QVariant KApplicationScopePrivate::defaultIfNull(const Property<T> &prop, const T &opt)
 {
     // Convert null value to default if there is one
-    return opt ? *opt : prop.hasDefault ? prop.defaultValue : QVariant();
+    return opt ? QVariant::fromValue(*opt) : prop.hasDefault ? QVariant::fromValue(prop.defaultValue) : QVariant();
 }
 
 template<typename T>
@@ -326,6 +341,8 @@ void KApplicationScopePrivate::handleGetAllCallFinished(QDBusPendingCallWatcher 
                 m_cgroup = QStringLiteral("/sys/fs/cgroup/systemd") + v.toString();
                 emit q_ptr->cgroupChanged(m_cgroup);
                 emit q_ptr->propertyChanged(k);
+            } else if (k == ioDeviceWeightProp.systemdName) {
+                saveIfNull<OptionalWeightsByDevice>(ioDeviceWeightProp, v);
             }
         }
     }

@@ -5,6 +5,7 @@
 
 #ifndef KAPPLICATIONSCOPE_H
 #define KAPPLICATIONSCOPE_H
+#include "dbustypes_p.h"
 #include "kcgroups_export.h"
 #include "optional.h"
 #include <QObject>
@@ -111,6 +112,7 @@ class KApplicationScopePrivate;
     static_assert(true, "")
 
 OPTIONAL_GADGET(qulonglong, OptionalQULongLong);
+OPTIONAL_GADGET(WeightsByDevice, OptionalWeightsByDevice);
 
 /**
  * @brief A desktop application in a systemd transient scope
@@ -173,6 +175,13 @@ class KCGROUPS_EXPORT KApplicationScope : public QObject
      * @notifySignal cpuQuotaPeriodChanged()
      */
     Q_PROPERTY(OptionalQULongLong ioWeight READ ioWeight WRITE setIoWeight NOTIFY ioWeightChanged)
+
+    /**
+     * @brief Per-Device I/O weight. Between 1 and 10000. Defaults to 100.
+     * @accessors cpuQuotaPeriod(), setCpuQuotaPeriod()
+     * @notifySignal cpuQuotaPeriodChanged()
+     */
+    Q_PROPERTY(OptionalWeightsByDevice ioDeviceWeight READ ioDeviceWeight WRITE setIoDeviceWeight NOTIFY ioDeviceWeightChanged)
 
     /**
      * @brief best-effort memory usage protection (in bytes) of all executed processes within the application.
@@ -261,6 +270,7 @@ public:
     OptionalQULongLong cpuQuotaPeriod() const;
     OptionalQULongLong cpuWeight() const;
     OptionalQULongLong ioWeight() const;
+    OptionalWeightsByDevice ioDeviceWeight() const;
     OptionalQULongLong memoryLow() const;
     OptionalQULongLong memoryHigh() const;
     OptionalQULongLong memoryMin() const;
@@ -315,6 +325,12 @@ Q_SIGNALS:
      * @param weight: the new weight value
      */
     void ioWeightChanged(const OptionalQULongLong &weight);
+
+    /**
+     * @brief emitted when the io device weight has changed
+     * @param weight: the new weight value
+     */
+    void ioDeviceWeightChanged(const OptionalWeightsByDevice &weight);
 
     /**
      * @brief emitted when memoryLow has changed
@@ -375,6 +391,12 @@ public Q_SLOTS:
      * @param weight: value to set
      */
     void setIoWeight(const OptionalQULongLong &weight);
+
+    /**
+     * @brief set ioDeviceWeight
+     * @param weight: value to set
+     */
+    void setIoDeviceWeight(const OptionalWeightsByDevice &weight);
 
     /**
      * @brief set memoryLow
