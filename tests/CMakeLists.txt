@@ -25,5 +25,4 @@ ecm_mark_as_test(foregroundtest)
 add_dependencies(foregroundtest spinner)
 target_link_libraries(
     foregroundtest
-    Qt5::Test
-    KF5::CGroups)
+    Qt5::Test)
