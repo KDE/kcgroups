@@ -12,3 +12,4 @@ Name[sl]=Foreground Booster
 Name[uk]=Пришвидшувач програм переднього плану
 Name[x-test]=xxForeground Boosterxx
 Exec=foreground_booster
+X-systemd-skip=true
