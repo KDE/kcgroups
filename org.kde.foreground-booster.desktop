@@ -1,0 +1,7 @@
+[Desktop Entry]
+
+Type=Application
+Version=1.0
+Name=Foreground Booster
+Exec=foreground_booster
+Terminal=true
