@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
-#include "kapplicationscope.h"
+#include "foregroundbooster.h"
+#include <KApplicationScope>
 #include <QtCore>
 #include <algorithm>
-#include <foregroundbooster.h>
 #include <kwindowsystem.h>
 
 ForegroundBooster::ForegroundBooster(QObject *parent)
