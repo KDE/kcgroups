@@ -1,0 +1,5 @@
+[Unit]
+Description=Foreground App CPU weight booster
+
+[Service]
+ExecStart=@KDE_INSTALL_FULL_BINDIR@/bin/foreground_booster
