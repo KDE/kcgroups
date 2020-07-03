@@ -1,0 +1,13 @@
+[Unit]
+Description=Foreground App CPU weight booster
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Service]
+Type=simple
+Restart=on-failure
+ExecStart=@KDE_INSTALL_FULL_BINDIR@/foreground_booster
+Slice=app.slice
+
+[Install]
+WantedBy=basic.target
