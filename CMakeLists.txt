@@ -9,4 +9,8 @@ target_link_libraries(
     KF5::CGroups)
 install(TARGETS foreground_booster ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 
-install(FILES org.kde.foreground-booster.desktop DESTINATION ${KDE_INSTALL_AUTOSTARTDIR})
+set(AUTOSTART_FOREGROUND_BOOSTER FALSE CACHE BOOL "install foreground_booster to autostart")
+
+if(AUTOSTART_FOREGROUND_BOOSTER)
+    install(FILES org.kde.foreground-booster.desktop DESTINATION ${KDE_INSTALL_AUTOSTARTDIR})
+endif()
