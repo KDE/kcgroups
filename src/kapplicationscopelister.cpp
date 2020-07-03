@@ -29,7 +29,7 @@ QStringList KApplicationScopeLister::paths() const
     return d->m_appPaths;
 }
 
-static const auto glob = QStringLiteral("org.kde.krun-*-*.desktop.scope");
+static const auto glob = QStringLiteral("app-*");
 
 KApplicationScopeListerPrivate::KApplicationScopeListerPrivate(KApplicationScopeLister *parent)
     : m_lastError(KApplicationScopeLister::NoError)
