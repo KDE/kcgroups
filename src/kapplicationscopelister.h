@@ -68,7 +68,7 @@ Q_SIGNALS:
     void errorOccurred(ErrorCode lastError);
 
     /**
-     * @brief emiited when a path is added or removed
+     * @brief emitted when a path is added or removed
      * @param paths: the new list of paths
      */
     void pathsChanged(const QStringList &paths);

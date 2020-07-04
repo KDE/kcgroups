@@ -284,7 +284,7 @@ Q_SIGNALS:
     void idChanged(const QString &id);
 
     /**
-     * @brief emmited when cgroup has been loaded asynchonously
+     * @brief emitted when cgroup has been loaded asynchronously
      * @param cgroup: the filesystem cgroup path
      */
     void cgroupChanged(const QString &cgroup);
