@@ -4,6 +4,7 @@ Type=Application
 Version=1.0
 Name=Foreground Booster
 Name[pt]=Acelerador em Primeiro Plano
+Name[sk]=Zvýrazňovač popredia
 Name[uk]=Пришвидшувач програм переднього плану
 Name[x-test]=xxForeground Boosterxx
 Exec=foreground_booster
