@@ -83,7 +83,7 @@ void ForegroundBooster::onActiveWindowChanged(WId wid)
 
     if (prevApp != currentApp) {
         if (prevApp != nullptr) {
-            qInfo() << "resetting" << prevInfo->name() << prevApp->id() << "weight to default";
+            qInfo() << "resetting" << (prevInfo ? prevInfo->name() : QStringLiteral("[none]")) << prevApp->id() << "weight to default";
             prevApp->setCpuWeight(OptionalQULongLong());
         }
         if (currentApp != nullptr) {
