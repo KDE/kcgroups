@@ -169,8 +169,8 @@ class KCGROUPS_EXPORT KApplicationScope : public QObject
 
     /**
      * @brief Overall block I/O weight. Between 1 and 10000. Defaults to 100.
-     * @accessors cpuQuotaPeriod(), setCpuQuotaPeriod()
-     * @notifySignal cpuQuotaPeriodChanged()
+     * @accessors ioWeight(), setIoWeight()
+     * @notifySignal ioWeightChanged()
      */
     Q_PROPERTY(OptionalQULongLong ioWeight READ ioWeight WRITE setIoWeight NOTIFY ioWeightChanged)
 
