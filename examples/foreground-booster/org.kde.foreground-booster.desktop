@@ -4,6 +4,7 @@ Type=Application
 Version=1.0
 Name=Foreground Booster
 Name[ca]=Accelerador en primer pla
+Name[ca@valencia]=Accelerador en primer pla
 Name[es]=Acelerador en primer plano
 Name[fr]=Accélérateur d'arrière-plan
 Name[pt]=Acelerador em Primeiro Plano
