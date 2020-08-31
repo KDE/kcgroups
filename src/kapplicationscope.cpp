@@ -238,7 +238,7 @@ KApplicationScopePrivate::KApplicationScopePrivate(const QString &path, const QS
     qDBusRegisterMetaType<QVariantMultiItem>();
 
     // Try to fill cache for all properties.
-    const auto interface = path.endsWith(QStringLiteral(".scope")) ? systemd1Scope : systemd1Service;
+    const auto interface = path.endsWith(QStringLiteral("_2escope")) ? systemd1Scope : systemd1Service;
     const auto *getAllWatcher = new QDBusPendingCallWatcher(m_properties->GetAll(interface), q_ptr);
     QObject::connect(getAllWatcher, &QDBusPendingCallWatcher::finished, q_ptr, [this](QDBusPendingCallWatcher *w) {
         handleGetAllCallFinished(w);
