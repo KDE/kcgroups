@@ -8,9 +8,11 @@
 #include <algorithm>
 #include <kwindowsystem.h>
 
-ForegroundBooster::ForegroundBooster(QObject *parent)
+ForegroundBooster::ForegroundBooster(qulonglong boostedCpuWeight, QObject *parent)
     : QObject(parent)
     , m_kws(KWindowSystem::self())
+    , m_boostedCpuWeight(boostedCpuWeight)
+
 {
     onActiveWindowChanged(KWindowSystem::activeWindow());
     connect(m_kws, &KWindowSystem::activeWindowChanged, this, &ForegroundBooster::onActiveWindowChanged);
@@ -83,12 +85,13 @@ void ForegroundBooster::onActiveWindowChanged(WId wid)
 
     if (prevApp != currentApp) {
         if (prevApp != nullptr) {
-            qInfo() << "resetting" << (prevInfo ? prevInfo->name() : QStringLiteral("[none]")) << prevApp->id() << "weight to default";
+            qInfo() << "resetting" << (prevInfo ? prevInfo->name() : QStringLiteral("[none]")) << prevApp->id()
+                    << "weight to default";
             prevApp->setCpuWeight(OptionalQULongLong());
         }
         if (currentApp != nullptr) {
-            qInfo() << "setting" << info->name() << "weight to max";
-            currentApp->setCpuWeight(10000);
+            qInfo() << "setting" << info->name() << "weight to" << (float)m_boostedCpuWeight / 100. << "times normal weight";
+            currentApp->setCpuWeight(m_boostedCpuWeight);
         }
     } else {
         if (wid == m_currentWid) {
