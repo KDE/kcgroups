@@ -15,7 +15,7 @@ class KApplicationScope;
 class ForegroundBooster : public QObject
 {
 public:
-    ForegroundBooster(QObject *parent = nullptr);
+    ForegroundBooster(qulonglong boostedCpuWeight = 10000, QObject *parent = nullptr);
     ~ForegroundBooster();
 
 public Q_SLOTS:
@@ -29,6 +29,7 @@ private:
     QHash<WId, KWindowInfo *> m_infoByWid;
     QHash<uint, KApplicationScope *> m_appsByPid;
     QMultiHash<uint, WId> m_widsByPid;
+    qulonglong m_boostedCpuWeight;
 };
 
 #endif // FOREGROUNDBOOSTER_H
