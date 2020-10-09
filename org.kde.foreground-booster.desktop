@@ -21,5 +21,6 @@ Name[sk]=Zvýrazňovač popredia
 Name[sl]=Foreground Booster
 Name[uk]=Пришвидшувач програм переднього плану
 Name[x-test]=xxForeground Boosterxx
+Name[zh_CN]=前景加成
 Exec=foreground_booster
 X-systemd-skip=true
