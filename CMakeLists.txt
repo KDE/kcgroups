@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.10)
 
-set(KF5_VERSION "5.67.0") # handled by release scripts
+set(KF5_VERSION "5.73.0") # handled by release scripts
 project(KCGroups VERSION ${KF5_VERSION})
 
 include(FeatureSummary)
-find_package(ECM 5.67.0 NO_MODULE)
+find_package(ECM 5.73.0 NO_MODULE)
 set_package_properties(
     ECM
     PROPERTIES
