@@ -17,5 +17,5 @@ if(AUTOSTART_FOREGROUND_BOOSTER)
     install(FILES org.kde.foreground-booster.desktop DESTINATION ${KDE_INSTALL_AUTOSTARTDIR})
 endif()
 
-configure_file(foreground-booster.service.in ${CMAKE_CURRENT_BINARY_DIR}/foreground-booster.service)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/foreground-booster.service DESTINATION ${KDE_INSTALL_SYSTEMDUSERUNITDIR})
+configure_file(plasma-foreground-booster.service.in ${CMAKE_CURRENT_BINARY_DIR}/foreground-booster.service)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/plasma-foreground-booster.service DESTINATION ${KDE_INSTALL_SYSTEMDUSERUNITDIR})
