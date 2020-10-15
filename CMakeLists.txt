@@ -1,4 +1,5 @@
 include(KDEInstallDirs)
+include(ECMConfiguredInstall)
 
 find_package(KF5WindowSystem)
 find_package(KF5Config)
@@ -17,5 +18,4 @@ if(AUTOSTART_FOREGROUND_BOOSTER)
     install(FILES org.kde.foreground-booster.desktop DESTINATION ${KDE_INSTALL_AUTOSTARTDIR})
 endif()
 
-configure_file(plasma-foreground-booster.service.in ${CMAKE_CURRENT_BINARY_DIR}/foreground-booster.service)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/plasma-foreground-booster.service DESTINATION ${KDE_INSTALL_SYSTEMDUSERUNITDIR})
+ecm_install_configured_files(INPUT plasma-foreground-booster.service.in DESTINATION ${KDE_INSTALL_SYSTEMDUSERUNITDIR})
