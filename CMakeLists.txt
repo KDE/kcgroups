@@ -3,8 +3,9 @@ include(ECMConfiguredInstall)
 
 find_package(KF5WindowSystem)
 find_package(KF5Config)
-if(NOT KF5WindowSystem_FOUND OR NOT KF5Config_FOUND)
-  message(STATUS "KF5WindowSystem or KF5Config not found, will not build foreground-booster")
+find_package(KF5DBusAddons)
+if(NOT KF5WindowSystem_FOUND OR NOT KF5Config_FOUND OR NOT KF5DBusAddons_FOUND)
+  message(STATUS "KWindowSystem, KDBusAddons or KConfig not found, will not build foreground-booster")
   return()
 endif()
 
@@ -16,6 +17,7 @@ target_link_libraries(
     KF5::WindowSystem
     KF5::ConfigCore
     KF5::ConfigGui
+    KF5::DBusAddons
     KF5::CGroups)
 install(TARGETS foreground_booster ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 
