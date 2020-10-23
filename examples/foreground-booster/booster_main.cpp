@@ -4,6 +4,7 @@
 
 #include "foregroundbooster.h"
 #include "kcgroups_debug.h"
+#include <KDBusService>
 #include <QEventLoop>
 #include <QGuiApplication>
 #include <QLoggingCategory>
@@ -13,6 +14,11 @@ int main(int argc, char **argv)
     QLoggingCategory::setFilterRules(QStringLiteral("kf5.kcgroups.debug=true"));
     QGuiApplication::setDesktopSettingsAware(false);
     QGuiApplication app(argc, argv);
+
+    app.setApplicationName(QStringLiteral("foreground-booster"));
+    app.setOrganizationDomain(QStringLiteral("kde.org"));
+    KDBusService service(KDBusService::Unique);
+
     ForegroundBooster booster(&app);
     return app.exec();
 }
