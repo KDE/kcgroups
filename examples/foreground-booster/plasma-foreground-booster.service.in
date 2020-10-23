@@ -7,6 +7,7 @@ After=graphical-session.target
 Type=simple
 Restart=on-failure
 ExecStart=@KDE_INSTALL_FULL_BINDIR@/foreground_booster
+ExecCondition=/usr/bin/kde-systemd-start-condition --condition "kcgroupsrc:Foreground Booster:autostart:false"
 Slice=background.slice
 
 [Install]
