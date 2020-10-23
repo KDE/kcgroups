@@ -1,10 +1,8 @@
 include(KDEInstallDirs)
 include(ECMConfiguredInstall)
 
-find_package(KF5WindowSystem)
-find_package(KF5Config)
-find_package(KF5DBusAddons)
-if(NOT KF5WindowSystem_FOUND OR NOT KF5Config_FOUND OR NOT KF5DBusAddons_FOUND)
+find_package(KF5 COMPONENTS WindowSystem Config DBusAddons)
+if(NOT KF5_FOUND)
   message(STATUS "KWindowSystem, KDBusAddons or KConfig not found, will not build foreground-booster")
   return()
 endif()
