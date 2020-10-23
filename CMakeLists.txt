@@ -3,6 +3,11 @@ include(ECMConfiguredInstall)
 
 find_package(KF5WindowSystem)
 find_package(KF5Config)
+if(NOT KF5WindowSystem_FOUND OR NOT KF5Config_FOUND)
+  message(STATUS "KF5WindowSystem or KF5Config not found, will not build foreground-booster")
+  return()
+endif()
+
 add_executable(foreground_booster foregroundbooster.cpp foregroundbooster.h booster_main.cpp)
 target_link_libraries(
     foreground_booster
