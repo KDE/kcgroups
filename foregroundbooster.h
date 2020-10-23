@@ -7,6 +7,7 @@
 #include <QHash>
 #include <QObject>
 #include <QtGui/qwindowdefs.h>
+#include "boostersettings.h"
 
 class KWindowSystem;
 class KWindowInfo;
@@ -15,7 +16,7 @@ class KApplicationScope;
 class ForegroundBooster : public QObject
 {
 public:
-    ForegroundBooster(qulonglong boostedCpuWeight = 10000, QObject *parent = nullptr);
+    ForegroundBooster(QObject *parent = nullptr);
     ~ForegroundBooster();
 
 public Q_SLOTS:
@@ -24,12 +25,12 @@ public Q_SLOTS:
 
 private:
     KWindowSystem *m_kws;
+    BoosterSettings *m_settings;
     uint m_currentPid;
     WId m_currentWid;
     QHash<WId, KWindowInfo *> m_infoByWid;
     QHash<uint, KApplicationScope *> m_appsByPid;
     QMultiHash<uint, WId> m_widsByPid;
-    qulonglong m_boostedCpuWeight;
 };
 
 #endif // FOREGROUNDBOOSTER_H
