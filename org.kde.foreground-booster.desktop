@@ -24,3 +24,4 @@ Name[x-test]=xxForeground Boosterxx
 Name[zh_CN]=前景加成
 Exec=foreground_booster
 X-systemd-skip=true
+X-KDE-autostart-condition=kcgroupsrc:Foreground Booster:autostart:false
