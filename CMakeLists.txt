@@ -57,7 +57,7 @@ option(BUILD_QCH "Build API documentation in QCH format (for e.g. Qt Assistant, 
 add_feature_info(QCH ${BUILD_QCH} "API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)")
 
 # create a Config.cmake and a ConfigVersion.cmake file and install them
-set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KCGroups")
+set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KF5CGroups")
 
 if (BUILD_QCH)
     ecm_install_qch_export(
@@ -84,7 +84,8 @@ install(
     EXPORT KF5CGroupsTargets
     DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
     FILE KF5CGroupsTargets.cmake
-    NAMESPACE KF5::)
+    NAMESPACE KF5::
+    COMPONENT Devel)
 
 install(
     FILES ${CMAKE_CURRENT_BINARY_DIR}/kcgroups_version.h
