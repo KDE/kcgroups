@@ -1,10 +1,19 @@
+cmake_minimum_required(VERSION 3.10)
+
+project(ForegroundBooster)
+
+find_package(ECM 5.73.0 REQUIRED NO_MODULE)
+set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
+
 include(KDEInstallDirs)
+include(KDECompilerSettings)
+include(KDECMakeSettings)
 include(ECMConfiguredInstall)
 
-find_package(KF5 COMPONENTS WindowSystem Config DBusAddons)
-if(NOT KF5_FOUND)
-  message(STATUS "KWindowSystem, KDBusAddons or KConfig not found, will not build foreground-booster")
-  return()
+find_package(KF5 REQUIRED COMPONENTS CGroups WindowSystem Config DBusAddons)
+
+if(BUILD_TESTING)
+    add_subdirectory(tests)
 endif()
 
 add_executable(foreground_booster foregroundbooster.cpp foregroundbooster.h booster_main.cpp)

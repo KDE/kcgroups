@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
 #include "foregroundbooster.h"
-#include "kcgroups_debug.h"
 #include <KDBusService>
 #include <QEventLoop>
 #include <QGuiApplication>
