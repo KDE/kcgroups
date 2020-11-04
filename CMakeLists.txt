@@ -36,16 +36,11 @@ include(ECMSetupVersion)
 include(ECMGenerateHeaders)
 include(ECMAddQch)
 
-ecm_setup_version(
-    PROJECT
-    VARIABLE_PREFIX
-    KCGROUPS
-    VERSION_HEADER
-    "${CMAKE_CURRENT_BINARY_DIR}/kcgroups_version.h"
-    PACKAGE_VERSION_FILE
-    "${CMAKE_CURRENT_BINARY_DIR}/KF5CGroupsConfigVersion.cmake"
-    SOVERSION
-    1)
+ecm_setup_version(PROJECT
+    VARIABLE_PREFIX KCGROUPS
+    VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/kcgroups_version.h"
+    PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5CGroupsConfigVersion.cmake"
+    SOVERSION 5)
 
 add_subdirectory(src)
 add_subdirectory(examples)

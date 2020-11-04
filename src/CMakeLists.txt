@@ -21,6 +21,10 @@ add_library(KF5CGroups ${libkcgroups_SRCS})
 generate_export_header(KF5CGroups BASE_NAME KCGroups)
 add_library(KF5::CGroups ALIAS KF5CGroups)
 
+target_include_directories(
+    KF5CGroups
+    INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF5}/KCGroups>")
+
 target_link_libraries(
     KF5CGroups
     PUBLIC Qt5::Core
@@ -40,13 +44,18 @@ ecm_generate_headers(
     KApplicationScopeListModel
     REQUIRED_HEADERS KCGroups_HEADERS)
 
+list(APPEND
+    KCGroups_HEADERS
+    optional.h
+    ${CMAKE_CURRENT_BINARY_DIR}/kcgroups_export.h)
+
 install(
     TARGETS KF5CGroups
     EXPORT KF5CGroupsTargets
     ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(
-    FILES ${KCGroups_HEADERS} ${CMAKE_CURRENT_BINARY_DIR}/kcgroups_export.h
+    FILES ${KCGroups_HEADERS}
     DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/KCGroups
     COMPONENT Devel)
 
@@ -57,7 +66,7 @@ if(BUILD_QCH)
         BASE_NAME KF5CGroups
         VERSION ${KF5_VERSION}
         ORG_DOMAIN org.kde
-        SOURCES ${KCGroups_HEADERS} ${CMAKE_CURRENT_BINARY_DIR}/kcgroups_export.h
+        SOURCES ${KCGroups_HEADERS}
         MD_MAINPAGE "${CMAKE_SOURCE_DIR}/README.md"
         LINK_QCHS
         Qt5DBus_QCH
