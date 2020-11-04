@@ -1,7 +1,7 @@
 maintainer: hchain
 description: control cgroup resources through systemd dbus interface 
 tier: 1
-type: functional
+type: integration
 platforms:
     - name: Linux
 portingAid: false
