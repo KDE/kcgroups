@@ -43,7 +43,6 @@ ecm_setup_version(PROJECT
     SOVERSION 5)
 
 add_subdirectory(src)
-add_subdirectory(examples)
 if(BUILD_TESTING)
     add_subdirectory(tests)
 endif()
