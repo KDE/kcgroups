@@ -47,6 +47,7 @@ ecm_generate_headers(
 list(APPEND
     KCGroups_HEADERS
     optional.h
+    optionalgadget.h
     ${CMAKE_CURRENT_BINARY_DIR}/kcgroups_export.h)
 
 install(
