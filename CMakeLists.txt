@@ -10,7 +10,8 @@ include(KDECompilerSettings)
 include(KDECMakeSettings)
 include(ECMConfiguredInstall)
 
-find_package(KF5 REQUIRED COMPONENTS CGroups WindowSystem Config DBusAddons)
+find_package(KF5 REQUIRED COMPONENTS CGroups Config DBusAddons)
+find_package(LibTaskManager CONFIG REQUIRED)
 
 if(BUILD_TESTING)
     add_subdirectory(tests)
@@ -21,7 +22,7 @@ kconfig_add_kcfg_files(foreground_booster boostersettings.kcfgc)
 target_link_libraries(
     foreground_booster
     Qt5::DBus
-    KF5::WindowSystem
+    PW::LibTaskManager
     KF5::ConfigCore
     KF5::ConfigGui
     KF5::DBusAddons

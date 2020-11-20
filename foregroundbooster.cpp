@@ -5,101 +5,95 @@
 #include "foregroundbooster.h"
 #include <KApplicationScope>
 #include <QtCore>
+#include <abstracttasksmodel.h>
 #include <algorithm>
-#include <kwindowsystem.h>
+
+using namespace TaskManager;
 
 ForegroundBooster::ForegroundBooster(QObject *parent)
     : QObject(parent)
-    , m_kws(KWindowSystem::self())
+    , m_tasksModel(new TasksModel(this))
     , m_settings(new BoosterSettings(this))
 
 {
-    onActiveWindowChanged(KWindowSystem::activeWindow());
-    connect(m_kws, &KWindowSystem::activeWindowChanged, this, &ForegroundBooster::onActiveWindowChanged);
-    connect(m_kws, &KWindowSystem::windowRemoved, this, &ForegroundBooster::onWindowRemoved);
+    connect(m_tasksModel, &TasksModel::activeTaskChanged, this, &ForegroundBooster::onActiveWindowChanged);
+    connect(m_tasksModel, &TasksModel::rowsAboutToBeRemoved, this, &ForegroundBooster::onWindowRemoved);
 }
 
 ForegroundBooster::~ForegroundBooster()
 {
-    qDeleteAll(m_infoByWid);
 }
 
-void ForegroundBooster::onWindowRemoved(WId wid)
+void ForegroundBooster::onWindowRemoved(const QModelIndex &parent, int first, int last)
 {
-    const auto info = m_infoByWid.take(wid);
-    if (info) {
-        const auto pid = info->pid();
-        const auto app = m_appsByPid.value(pid);
-        m_widsByPid.remove(pid, wid);
+    for (int row = first; row <= last; row++) {
+        const auto index = m_tasksModel->index(row, 0, parent);
+        const auto pid = m_tasksModel->data(index, AbstractTasksModel::AppPid).toUInt();
 
-        if (m_widsByPid.contains(pid)) {
-            qDebug() << (app ? app->id() : QString::number(pid)) << "still has at least one window, not deleting";
-        } else if (app) {
-            qDebug() << "Removing" << app->id() << "from cache";
-            m_appsByPid.remove(pid);
+        if (m_appsByPid.contains(pid)) {
+            const auto app = m_appsByPid.value(pid);
+            if (app) {
+                qDebug() << "Removing" << app->id() << "from cache";
+            }
             delete app;
+            m_appsByPid.remove(pid);
         }
-        delete info;
     }
 }
 
-void ForegroundBooster::onActiveWindowChanged(WId wid)
+void ForegroundBooster::onActiveWindowChanged()
 {
-    const auto prevInfo = m_infoByWid.value(m_currentWid);
-    const auto prevApp = m_appsByPid.value(m_currentPid);
-    qDebug() << "switching from" << m_currentWid << "to" << wid;
+    const auto activeTaskIndex = m_tasksModel->activeTask();
+    const auto appid = m_tasksModel->data(activeTaskIndex, AbstractTasksModel::AppId).toString();
+    const auto pid = m_tasksModel->data(activeTaskIndex, AbstractTasksModel::AppPid).toUInt();
+    const auto isWindow = m_tasksModel->data(activeTaskIndex, AbstractTasksModel::IsWindow).toBool();
 
-    auto info = m_infoByWid[wid];
-    if (!info) {
-        info = new KWindowInfo(wid, NET::WMPid | NET::WMName | NET::WMWindowType, NET::WM2DesktopFileName);
-        m_infoByWid[wid] = info;
-        m_widsByPid.insert(info->pid(), wid);
-    }
+    qDebug() << "";
+    if (!isWindow) {
+        qWarning() << "NOT WINDOW" << pid;
 
-    if (!info->valid()) {
-        qWarning() << "INVALID";
         return;
     }
 
-    qDebug() << "TYPE" << info->windowType(NET::AllTypesMask);
+    if (pid == m_currentPid) {
+        qWarning() << "SAME PID" << appid;
+        return;
+    }
 
-    m_currentPid = info->pid();
+    const auto prevApp = m_appsByPid.value(m_currentPid);
+    qDebug() << "Switching from" << m_currentAppid << "to" << appid;
 
     KApplicationScope *currentApp;
 
-    if (m_appsByPid.contains(m_currentPid)) {
-        currentApp = m_appsByPid[m_currentPid];
+    if (m_appsByPid.contains(pid)) {
+        currentApp = m_appsByPid[pid];
         if (currentApp == nullptr) {
-            qDebug() << "Previous non-systemd app focused" << info->name() << info->desktopFileName() << m_currentPid;
+            qDebug() << "Previous unmanaged app focused: appid =" << appid << ", pid =" << pid;
         } else {
-            qDebug() << "Previous app focused:" << currentApp->id();
+            qDebug() << "Previous  systemd  app focused:" << currentApp->id() << ", appid =" << appid << ", pid =" << pid;
         }
     } else {
-        qDebug() << "New window focused:" << info->name() << info->desktopFileName() << m_currentPid;
-        currentApp = KApplicationScope::fromPid(m_currentPid, this);
-        m_appsByPid[m_currentPid] = currentApp;
+        qDebug() << "New window focused: appid =" << appid << ", pid =" << pid;
+        currentApp = KApplicationScope::fromPid(pid, this);
+        m_appsByPid[pid] = currentApp;
         if (currentApp == nullptr) {
-            qDebug() << "New Window not managed by systemd";
+            qDebug() << "This new window is not managed by systemd";
         }
     }
 
     if (prevApp != currentApp) {
         if (prevApp != nullptr) {
-            qInfo() << "resetting" << (prevInfo ? prevInfo->name() : QStringLiteral("[none]")) << prevApp->id()
-                    << "weight to default";
+            qInfo() << "resetting" << prevApp->id() << "weight to default";
             prevApp->setCpuWeight(OptionalQULongLong());
         }
         if (currentApp != nullptr) {
-            qInfo() << "setting" << info->name() << "weight to" << (float)m_settings->boostedCpuWeight() / 100. << "times normal weight";
+            qInfo() << "setting" << currentApp->id() << "weight to" << (float)m_settings->boostedCpuWeight() / 100.
+                    << "times normal weight";
             currentApp->setCpuWeight(m_settings->boostedCpuWeight());
         }
     } else {
-        if (wid == m_currentWid) {
-            qDebug() << "Same app, same window, weird";
-        } else {
-            qDebug() << "Same app but different window" << (prevInfo ? prevInfo->name() : QStringLiteral("[none]"))
-                     << info->name();
-        }
+        qDebug() << "Changed to different window of same app";
     }
-    m_currentWid = wid;
+    m_currentPid = pid;
+    m_currentAppid = appid;
 }

@@ -4,13 +4,11 @@
 
 #ifndef FOREGROUNDBOOSTER_H
 #define FOREGROUNDBOOSTER_H
+#include "boostersettings.h"
 #include <QHash>
 #include <QObject>
-#include <QtGui/qwindowdefs.h>
-#include "boostersettings.h"
+#include <tasksmodel.h>
 
-class KWindowSystem;
-class KWindowInfo;
 class KApplicationScope;
 
 class ForegroundBooster : public QObject
@@ -20,17 +18,16 @@ public:
     ~ForegroundBooster();
 
 public Q_SLOTS:
-    void onActiveWindowChanged(WId id);
-    void onWindowRemoved(WId id);
+    void onActiveWindowChanged();
+    void onWindowRemoved(const QModelIndex &parent, int first, int last);
 
 private:
-    KWindowSystem *m_kws;
+    TaskManager::TasksModel *m_tasksModel;
+
     BoosterSettings *m_settings;
     uint m_currentPid;
-    WId m_currentWid;
-    QHash<WId, KWindowInfo *> m_infoByWid;
+    QString m_currentAppid;
     QHash<uint, KApplicationScope *> m_appsByPid;
-    QMultiHash<uint, WId> m_widsByPid;
 };
 
 #endif // FOREGROUNDBOOSTER_H
