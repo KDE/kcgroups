@@ -65,7 +65,7 @@ Q_SIGNALS:
      * @brief emitted when there is an error
      * @param lastError: the error code
      */
-    void errorOccurred(ErrorCode lastError);
+    void errorOccurred(KApplicationScopeLister::ErrorCode lastError);
 
     /**
      * @brief emitted when a path is added or removed

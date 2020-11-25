@@ -24,7 +24,7 @@ class KCGROUPS_EXPORT KApplicationScope : public QObject
      * @brief the dbus path of the application. Same as constructor parameter. Read-only, constant
      * @accessors path()
      */
-    Q_PROPERTY(QString path READ path)
+    Q_PROPERTY(QString path READ path CONSTANT)
 
     /**
      * @brief the systemd unit id. Read-only. Will be set asynchronously if not specified in constructor.
@@ -194,7 +194,7 @@ Q_SIGNALS:
      * @brief emitted when there is an error setting or getting a value
      * @param lastError: the error code
      */
-    void errorOccurred(ErrorCode lastError);
+    void errorOccurred(KApplicationScope::ErrorCode lastError);
 
     /**
      * @brief emitted when any cgroup resource property has changed
