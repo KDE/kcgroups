@@ -35,6 +35,7 @@ include(CMakePackageConfigHelpers)
 include(ECMSetupVersion)
 include(ECMGenerateHeaders)
 include(ECMAddQch)
+include(CheckIncludeFileCXX)
 
 ecm_setup_version(PROJECT
     VARIABLE_PREFIX KCGROUPS

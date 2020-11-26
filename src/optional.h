@@ -9,6 +9,8 @@
 #include <memory>
 #include <type_traits>
 
+namespace KCGroups
+{
 template<typename T>
 class optional
 {
@@ -107,5 +109,5 @@ bool operator!=(const T &lhs, const optional<T> &rhs) noexcept
 {
     return !(lhs == rhs);
 }
-
+}
 #endif // OPTIONAL_H

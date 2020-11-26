@@ -5,7 +5,19 @@
 
 #ifndef OPTIONALGADGET_H
 #define OPTIONALGADGET_H
+
+#ifdef STD_OPTIONAL_AVAILABLE
+#include <optional>
+#endif
+
+#ifdef __cpp_lib_optional
+template<typename T>
+using optional = std::optional<T>;
+#else
 #include "optional.h"
+template<typename T>
+using optional = KCGroups::optional<T>;
+#endif
 
 #define OPTIONAL_GADGET(T, name)                                                                                                 \
     /**                                                                                                                          \
