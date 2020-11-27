@@ -6,7 +6,11 @@ set(libkcgroups_SRCS
 ecm_qt_declare_logging_category(libkcgroups_SRCS
     HEADER kcgroups_debug.h
     IDENTIFIER KCGROUPS_LOG
-    CATEGORY_NAME kf5.kcgroups)
+    CATEGORY_NAME kf.cgroups
+    OLD_CATEGORY_NAMES kf5.kcgroups
+    DESCRIPTION "KCGroups"
+    EXPORT KCGROUPS
+)
 
 set(DBUS_INTERFACE_XML_FILES
     dbus/org.freedesktop.DBus.Properties.xml
@@ -62,6 +66,12 @@ install(
     FILES ${KCGroups_HEADERS}
     DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/KCGroups
     COMPONENT Devel)
+
+ecm_qt_install_logging_categories(
+    EXPORT KCGROUPS
+    FILE kcgroups.categories
+    DESTINATION ${KDE_INSTALL_LOGGINGCATEGORIESDIR}
+)
 
 if(BUILD_QCH)
     ecm_add_qch(
