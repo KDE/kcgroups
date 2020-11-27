@@ -41,6 +41,34 @@ class KCGROUPS_EXPORT KApplicationScope : public QObject
     Q_PROPERTY(QString cgroup READ cgroup NOTIFY cgroupChanged)
 
     /**
+     * @brief the systemd unit description. Read-only.
+     * @accessors description()
+     * @notifySignal descriptionChanged()
+     */
+    Q_PROPERTY(QString description READ description NOTIFY descriptionChanged)
+
+    /**
+     * @brief the .desktop application name. Read-only.
+     * @accessors desktopName()
+     * @notifySignal desktopNameChanged()
+     */
+    Q_PROPERTY(QString desktopName READ desktopName NOTIFY desktopNameChanged)
+
+    /**
+     * @brief the application .desktop file if available. Read-only.
+     * @accessors desktopFilePath()
+     * @notifySignal desktopFilePathChanged()
+     */
+    Q_PROPERTY(QString desktopFilePath READ desktopFilePath NOTIFY desktopFilePathChanged)
+
+    /**
+     * @brief the app instance random identifier. Can be empty if this is a singleton application.
+     * @accessors instance()
+     * @notifySignal instanceChanged()
+     */
+    Q_PROPERTY(QString instance READ instance NOTIFY instanceChanged)
+
+    /**
      * @brief code of the last error that occurred (NoError if none)
      * @accessors lastError()
      * @notifySignal errorOccurred()
@@ -165,6 +193,10 @@ public:
     QString path() const;
     QString id() const;
     QString cgroup() const;
+    QString description() const;
+    QString desktopName() const;
+    QString desktopFilePath() const;
+    QString instance() const;
     ErrorCode lastError() const;
 
     OptionalQULongLong cpuQuota() const;
@@ -189,6 +221,30 @@ Q_SIGNALS:
      * @param cgroup: the filesystem cgroup path
      */
     void cgroupChanged(const QString &cgroup);
+
+    /**
+     * @brief emitted when description has been loaded asynchronously
+     * @param description: the systemd unit desciption
+     */
+    void descriptionChanged(const QString &description);
+
+    /**
+     * @brief emitted when .desktop name has been loaded asynchronously
+     * @param description: the .desktop application name
+     */
+    void desktopNameChanged(const QString &desktopName);
+
+    /**
+     * @brief emitted when .desktop file path has been loaded asynchronously
+     * @param description: the .desktop file path
+     */
+    void desktopFilePathChanged(const QString &desktopFilePath);
+
+    /**
+     * @brief emitted when the instance random identifier has been loaded asynchronously
+     * @param description: the instance random identifier
+     */
+    void instanceChanged(const QString &instance);
 
     /**
      * @brief emitted when there is an error setting or getting a value

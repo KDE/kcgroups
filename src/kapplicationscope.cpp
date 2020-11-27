@@ -101,6 +101,26 @@ QString KApplicationScope::cgroup() const
     return d_ptr->m_cgroup;
 }
 
+QString KApplicationScope::description() const
+{
+    return d_ptr->m_description;
+}
+
+QString KApplicationScope::desktopName() const
+{
+    return d_ptr->m_desktopName;
+}
+
+QString KApplicationScope::desktopFilePath() const
+{
+    return d_ptr->m_desktopFilePath;
+}
+
+QString KApplicationScope::instance() const
+{
+    return d_ptr->m_instance;
+}
+
 KApplicationScope::ErrorCode KApplicationScope::lastError() const
 {
     return d_ptr->m_lastError;
@@ -234,6 +254,7 @@ KApplicationScopePrivate::KApplicationScopePrivate(const QString &path, const QS
     , m_unit(new org::freedesktop::systemd1::Unit(systemd1, path, QDBusConnection::sessionBus(), q_ptr))
     , m_properties(new org::freedesktop::DBus::Properties(systemd1, path, QDBusConnection::sessionBus(), q_ptr))
 {
+    parseId();
     qDBusRegisterMetaType<QVariantMultiMap>();
     qDBusRegisterMetaType<QVariantMultiItem>();
 
@@ -244,12 +265,33 @@ KApplicationScopePrivate::KApplicationScopePrivate(const QString &path, const QS
         handleGetAllCallFinished(w);
     });
 
-    // Get id if not passed as constructor argument
-    if (id.isNull()) {
-        const auto *getIdWatcher = new QDBusPendingCallWatcher(m_properties->Get(systemd1Unit, QStringLiteral("Id")), q_ptr);
-        QObject::connect(getIdWatcher, &QDBusPendingCallWatcher::finished, q_ptr, [this](QDBusPendingCallWatcher *w) {
-            handleGetIdFinished(w);
-        });
+    const auto *unitGetAllWatcher = new QDBusPendingCallWatcher(m_properties->GetAll(systemd1Unit));
+    QObject::connect(unitGetAllWatcher, &QDBusPendingCallWatcher::finished, q_ptr, [this](QDBusPendingCallWatcher *w) {
+        handleGetUnitCallFinished(w);
+    });
+}
+
+static const QRegularExpression appPattern(QStringLiteral("^apps?-(.+?)(?:-([^-]+))?\\.(scope|service)$"));
+
+void KApplicationScopePrivate::parseId()
+{
+    const auto match = appPattern.match(m_id);
+    if (match.hasMatch()) {
+        auto name = match.captured(1);
+        static const QRegularExpression escaped(QStringLiteral("\\\\x([0-9a-f]{2})"));
+        auto escapedBytes = escaped.globalMatch(name);
+        int offset = 0;
+        while (escapedBytes.hasNext()) {
+            bool ok;
+            const auto escapedMatch = escapedBytes.next();
+            const char byte = escapedMatch.captured(1).toUInt(&ok, 16);
+            if (ok) {
+                name.replace(offset + escapedMatch.capturedStart(), escapedMatch.capturedLength(), QLatin1Char(byte));
+                offset -= escapedMatch.capturedLength() - 1;
+            }
+        }
+        m_desktopName = name;
+        m_instance = match.captured(2);
     }
 }
 
@@ -350,16 +392,44 @@ void KApplicationScopePrivate::handleGetAllCallFinished(QDBusPendingCallWatcher 
     call->deleteLater();
 }
 
-void KApplicationScopePrivate::handleGetIdFinished(QDBusPendingCallWatcher *call)
+void KApplicationScopePrivate::handleGetUnitCallFinished(QDBusPendingCallWatcher *call)
 {
-    QDBusPendingReply<QVariant> reply = *call;
+    QDBusPendingReply<QVariantMap> reply = *call;
     if (reply.isError()) {
         setError(KApplicationScope::CacheFillError, reply.error().message());
     } else {
-        qCDebug(KCGROUPS_LOG) << "getid finished async";
-        m_id = reply.argumentAt<0>().toString();
-        emit q_ptr->idChanged(m_id);
-        emit q_ptr->propertyChanged(QStringLiteral("Id"));
+        qCDebug(KCGROUPS_LOG) << "getall unit finished async";
+        const QVariantMap properties = reply.argumentAt<0>();
+        for (auto kv = properties.constKeyValueBegin(); kv != properties.constKeyValueEnd(); kv++) {
+            auto k = (*kv).first;
+            auto v = (*kv).second.toString();
+            if (k == QStringLiteral("Id")) {
+                // If id not passed as constructor argument
+                if (m_id.isNull()) {
+                    m_id = v;
+                    parseId();
+                    emit q_ptr->idChanged(m_id);
+                    emit q_ptr->propertyChanged(k);
+                    if (!m_desktopName.isNull()) {
+                        emit q_ptr->desktopNameChanged(m_desktopName);
+                    }
+                }
+            } else if (k == QStringLiteral("Description")) {
+                if (v != m_id) {
+                    m_description = v;
+                    emit q_ptr->descriptionChanged(v);
+                    emit q_ptr->propertyChanged(k);
+                }
+            } else if (k == QStringLiteral("SourcePath")) {
+                if (v.endsWith(QStringLiteral(".desktop"))) {
+                    m_desktopFilePath = v;
+                    m_desktopName = QFileInfo(v).fileName().chopped(strlen(".desktop"));
+                    emit q_ptr->desktopFilePathChanged(v);
+                    emit q_ptr->propertyChanged(k);
+                    emit q_ptr->desktopNameChanged(m_desktopName);
+                }
+            }
+        }
     }
     call->deleteLater();
 }

@@ -38,6 +38,10 @@ public:
     QString m_path;
     QString m_id;
     QString m_cgroup;
+    QString m_description;
+    QString m_desktopFilePath;
+    QString m_desktopName;
+    QString m_instance;
     template<typename T>
     T getProperty(const Property<T> &prop);
     template<typename T>
@@ -48,8 +52,9 @@ private:
     KApplicationScope *q_ptr;
     org::freedesktop::systemd1::Unit *m_unit;
     org::freedesktop::DBus::Properties *m_properties;
+    void parseId();
     void handleGetAllCallFinished(QDBusPendingCallWatcher *call);
-    void handleGetIdFinished(QDBusPendingCallWatcher *call);
+    void handleGetUnitCallFinished(QDBusPendingCallWatcher *call);
     void handleVoidCallFinished(QDBusPendingCallWatcher *call, KApplicationScope::ErrorCode code);
     template<typename T>
     T nullIfDefault(const Property<T> &prop, const QVariant &variant);

@@ -7,8 +7,8 @@ import QtQuick 2.0
 import QtQuick.Controls 2.0
 
 ListView {
-    width: 1100
-    height: 700
+    width: parent && parent.width > 1000 ? parent.width : 1000
+    height: parent && parent.height > 600 ? parent.height : 600
     model: appList
     delegate: Rectangle {
         id: rect
@@ -69,10 +69,31 @@ ListView {
         Text {
             id: display_txt
             anchors.left: kill_btn.right
-            anchors.right: rect.right
-            anchors.verticalCenter: rect.verticalCenter
+            anchors.top: rect.top
+            anchors.topMargin: 10
             anchors.leftMargin: 20
             text: display
+        }
+
+        Text {
+            id: desktopName
+            anchors.left: kill_btn.right
+            anchors.bottom: rect.bottom
+            anchors.bottomMargin: 10
+            anchors.leftMargin: 20
+            text: object.desktopName
+            horizontalAlignment: Text.AlignRight
+        }
+
+        Text {
+            id: instance
+            anchors.left: display_txt.right
+            anchors.right: rect.right
+            anchors.bottom: rect.bottom
+            anchors.bottomMargin: 10
+            anchors.rightMargin: 20
+            text: object.instance
+            horizontalAlignment: Text.AlignRight
         }
     }
 }

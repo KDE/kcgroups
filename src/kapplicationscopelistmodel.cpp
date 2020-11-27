@@ -32,7 +32,7 @@ QVariant KApplicationScopeListModel::data(const QModelIndex &index, int role) co
         auto *app = d_ptr->m_apps[row];
         switch (role) {
         case Qt::DisplayRole:
-            return app->id();
+            return !app->description().isEmpty() ? app->description() : !app->desktopName().isEmpty() ? app->desktopName() : app->id();
         case ObjectRole:
             return QVariant::fromValue(app);
         }
