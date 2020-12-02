@@ -18,7 +18,7 @@ ListView {
         color: index % 2 ? "lightblue": "lightgreen"
 
         Text {
-            id: idx_txt
+            id: indexText
             anchors.left: rect.left
             anchors.verticalCenter: rect.verticalCenter
             anchors.leftMargin: 10
@@ -27,16 +27,16 @@ ListView {
         }
 
         CheckBox {
-            id: chkbx
-            anchors.left: idx_txt.right
+            id: quotaCheckBox
+            anchors.left: indexText.right
             anchors.verticalCenter: rect.verticalCenter
             checked: object.cpuQuota.hasValue
-            onCheckedChanged: object.cpuQuota.value = checked ? my_slider.value : undefined
+            onCheckedChanged: object.cpuQuota.value = checked ? quotaSlider.value : undefined
         }
 
         Slider {
-            id: my_slider
-            anchors.left: chkbx.right
+            id: quotaSlider
+            anchors.left: quotaCheckBox.right
             anchors.verticalCenter: rect.verticalCenter
             width: 200
             anchors.leftMargin: 10
@@ -48,8 +48,8 @@ ListView {
         }
 
         Text {
-            id: quota_txt
-            anchors.left: my_slider.right
+            id: quotaText
+            anchors.left: quotaSlider.right
             anchors.verticalCenter: rect.verticalCenter
             text: object.cpuQuota.hasValue ? `${Math.round(object.cpuQuota.value/10000)}%` : "no quota"
             horizontalAlignment: Text.AlignRight
@@ -57,8 +57,8 @@ ListView {
         }
 
         Button {
-            id: kill_btn
-            anchors.left: quota_txt.right
+            id: killButton
+            anchors.left: quotaText.right
             anchors.verticalCenter: rect.verticalCenter
             anchors.leftMargin: 20
             onClicked: object.stop()
@@ -67,8 +67,8 @@ ListView {
         }
 
         Text {
-            id: display_txt
-            anchors.left: kill_btn.right
+            id: displayText
+            anchors.left: killButton.right
             anchors.top: rect.top
             anchors.topMargin: 10
             anchors.leftMargin: 20
@@ -76,8 +76,8 @@ ListView {
         }
 
         Text {
-            id: desktopName
-            anchors.left: kill_btn.right
+            id: desktopNameText
+            anchors.left: killButton.right
             anchors.bottom: rect.bottom
             anchors.bottomMargin: 10
             anchors.leftMargin: 20
@@ -86,8 +86,8 @@ ListView {
         }
 
         Text {
-            id: instance
-            anchors.left: display_txt.right
+            id: instanceText
+            anchors.left: displayText.right
             anchors.right: rect.right
             anchors.bottom: rect.bottom
             anchors.bottomMargin: 10
