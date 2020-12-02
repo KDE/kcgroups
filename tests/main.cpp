@@ -4,12 +4,10 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
 #include "kapplicationscopelistmodel.h"
-#include <QDebug>
 #include <QGuiApplication>
 #include <QLoggingCategory>
 #include <QQmlContext>
 #include <QQuickView>
-#include <QTimer>
 
 int main(int argc, char **argv)
 {
