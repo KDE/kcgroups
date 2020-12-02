@@ -94,6 +94,7 @@ ListView {
             anchors.rightMargin: 20
             text: object.instance
             horizontalAlignment: Text.AlignRight
+            font.family: "monospace"
         }
     }
 }
