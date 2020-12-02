@@ -6,6 +6,7 @@
 #include "kapplicationscopelistmodel.h"
 #include <QDebug>
 #include <QGuiApplication>
+#include <QLoggingCategory>
 #include <QQmlContext>
 #include <QQuickView>
 #include <QTimer>
@@ -13,6 +14,7 @@
 int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);
+    QLoggingCategory::setFilterRules(QStringLiteral("kf5.kcgroups.debug=true"));
 
     KApplicationScopeListModel model(&app);
     QQuickView view;
