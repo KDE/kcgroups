@@ -32,6 +32,8 @@ target_include_directories(
 CHECK_INCLUDE_FILE_CXX("optional" _stdOptionalAvailable)
 target_compile_definitions(KF5CGroups PRIVATE $<${_stdOptionalAvailable}:STD_OPTIONAL_AVAILABLE>)
 
+target_compile_features(KF5CGroups PUBLIC cxx_std_14)
+
 target_link_libraries(
     KF5CGroups
     PUBLIC Qt5::Core
