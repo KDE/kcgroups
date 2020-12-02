@@ -229,6 +229,7 @@ KApplicationScope::~KApplicationScope()
 static const auto systemd1 = QStringLiteral("org.freedesktop.systemd1");
 static const auto systemd1Scope = QStringLiteral("org.freedesktop.systemd1.Scope");
 static const auto systemd1Service = QStringLiteral("org.freedesktop.systemd1.Service");
+static const auto systemd1Slice = QStringLiteral("org.freedesktop.systemd1.Slice");
 static const auto systemd1Unit = QStringLiteral("org.freedesktop.systemd1.Unit");
 static const auto systemd1Path = QStringLiteral("/org/freedesktop/systemd1");
 
@@ -259,7 +260,9 @@ KApplicationScopePrivate::KApplicationScopePrivate(const QString &path, const QS
     qDBusRegisterMetaType<QVariantMultiItem>();
 
     // Try to fill cache for all properties.
-    const auto interface = path.endsWith(QStringLiteral("_2escope")) ? systemd1Scope : systemd1Service;
+    const auto interface = path.endsWith(QStringLiteral("_2escope")) ? systemd1Scope
+        : path.endsWith(QStringLiteral("_2eslice"))                  ? systemd1Slice
+                                                                     : systemd1Service;
     const auto *getAllWatcher = new QDBusPendingCallWatcher(m_properties->GetAll(interface), q_ptr);
     QObject::connect(getAllWatcher, &QDBusPendingCallWatcher::finished, q_ptr, [this](QDBusPendingCallWatcher *w) {
         handleGetAllCallFinished(w);
@@ -271,7 +274,7 @@ KApplicationScopePrivate::KApplicationScopePrivate(const QString &path, const QS
     });
 }
 
-static const QRegularExpression appPattern(QStringLiteral("^apps?-(.+?)(?:-([^-]+))?\\.(scope|service)$"));
+static const QRegularExpression appPattern(QStringLiteral("^apps?-(.+?)(?:-([^-]+))?\\.(scope|service|slice)$"));
 
 void KApplicationScopePrivate::parseId()
 {
