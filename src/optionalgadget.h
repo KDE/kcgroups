@@ -11,12 +11,13 @@
 #endif
 
 #ifdef __cpp_lib_optional
+namespace KCGroups
+{
 template<typename T>
 using optional = std::optional<T>;
+}
 #else
 #include "optional.h"
-template<typename T>
-using optional = KCGroups::optional<T>;
 #endif
 
 #define OPTIONAL_GADGET(T, name)                                                                                                 \
@@ -26,7 +27,7 @@ using optional = KCGroups::optional<T>;
      Use name(const T &val) to create a name with a value. \n                                                                    \
      Can be implicitly converted to T (undefined behavior when no value) and to bool (same has hasValue())                       \
      */                                                                                                                          \
-    class KCGROUPS_EXPORT name : public optional<T>                                                                              \
+    class KCGROUPS_EXPORT name : public KCGroups::optional<T>                                                                    \
     {                                                                                                                            \
         Q_GADGET                                                                                                                 \
                                                                                                                                  \
@@ -49,7 +50,7 @@ using optional = KCGroups::optional<T>;
          */                                                                                                                      \
         using value_type = T;                                                                                                    \
                                                                                                                                  \
-        using optional<T>::optional;                                                                                             \
+        using KCGroups::optional<T>::optional;                                                                                   \
                                                                                                                                  \
         /**                                                                                                                      \
          @brief get value or default                                                                                             \
@@ -66,7 +67,7 @@ using optional = KCGroups::optional<T>;
          */                                                                                                                      \
         void setValue(const T &val)                                                                                              \
         {                                                                                                                        \
-            *reinterpret_cast<optional<T> *>(this) = val;                                                                        \
+            *reinterpret_cast<KCGroups::optional<T> *>(this) = val;                                                              \
         }                                                                                                                        \
                                                                                                                                  \
         /**                                                                                                                      \
@@ -81,36 +82,38 @@ using optional = KCGroups::optional<T>;
                                                                                                                                  \
     inline bool operator==(const name &lhs, const name &rhs)                                                                     \
     {                                                                                                                            \
-        return static_cast<optional<typename name::value_type>>(lhs) == static_cast<optional<typename name::value_type>>(rhs);   \
+        return static_cast<KCGroups::optional<typename name::value_type>>(lhs) ==                                                \
+            static_cast<KCGroups::optional<typename name::value_type>>(rhs);                                                     \
     }                                                                                                                            \
                                                                                                                                  \
     inline bool operator!=(const name &lhs, const name &rhs)                                                                     \
     {                                                                                                                            \
-        return static_cast<optional<typename name::value_type>>(lhs) != static_cast<optional<typename name::value_type>>(rhs);   \
+        return static_cast<KCGroups::optional<typename name::value_type>>(lhs) !=                                                \
+            static_cast<KCGroups::optional<typename name::value_type>>(rhs);                                                     \
     }                                                                                                                            \
                                                                                                                                  \
     template<typename U>                                                                                                         \
-    bool operator==(const name &lhs, const optional<U> &rhs)                                                                     \
+    bool operator==(const name &lhs, const KCGroups::optional<U> &rhs)                                                           \
     {                                                                                                                            \
-        return static_cast<optional<typename name::value_type>>(lhs) == rhs;                                                     \
+        return static_cast<KCGroups::optional<typename name::value_type>>(lhs) == rhs;                                           \
     }                                                                                                                            \
                                                                                                                                  \
     template<typename U>                                                                                                         \
-    bool operator!=(const name &lhs, const optional<U> &rhs)                                                                     \
+    bool operator!=(const name &lhs, const KCGroups::optional<U> &rhs)                                                           \
     {                                                                                                                            \
-        return static_cast<optional<typename name::value_type>>(lhs) != rhs;                                                     \
+        return static_cast<KCGroups::optional<typename name::value_type>>(lhs) != rhs;                                           \
     }                                                                                                                            \
                                                                                                                                  \
     template<typename T>                                                                                                         \
-    bool operator==(const optional<T> &lhs, const name &rhs)                                                                     \
+    bool operator==(const KCGroups::optional<T> &lhs, const name &rhs)                                                           \
     {                                                                                                                            \
-        return lhs == static_cast<optional<typename name::value_type>>(rhs);                                                     \
+        return lhs == static_cast<KCGroups::optional<typename name::value_type>>(rhs);                                           \
     }                                                                                                                            \
                                                                                                                                  \
     template<typename T>                                                                                                         \
-    bool operator!=(const optional<T> &lhs, const name &rhs)                                                                     \
+    bool operator!=(const KCGroups::optional<T> &lhs, const name &rhs)                                                           \
     {                                                                                                                            \
-        return lhs != static_cast<optional<typename name::value_type>>(rhs);                                                     \
+        return lhs != static_cast<KCGroups::optional<typename name::value_type>>(rhs);                                           \
     }                                                                                                                            \
                                                                                                                                  \
     Q_DECLARE_METATYPE(name)                                                                                                     \
