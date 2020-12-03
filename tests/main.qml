@@ -31,7 +31,7 @@ ListView {
             anchors.left: indexText.right
             anchors.verticalCenter: rect.verticalCenter
             checked: object.cpuQuota.hasValue
-            onCheckedChanged: object.cpuQuota.value = checked ? quotaSlider.value : undefined
+            onToggled: object.cpuQuota.value = checked ? quotaSlider.value : undefined
         }
 
         Slider {
@@ -42,8 +42,8 @@ ListView {
             anchors.leftMargin: 10
             from: 0
             to: 1000000
-            value: 1000000
-            onValueChanged: object.cpuQuota.value = value
+            value: object.cpuQuota.hasValue ? object.cpuQuota.value : 1000000
+            onMoved: object.cpuQuota.value = value
             enabled: object.cpuQuota.hasValue
         }
 
