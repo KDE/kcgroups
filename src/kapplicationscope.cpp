@@ -301,8 +301,9 @@ void KApplicationScopePrivate::parseId()
 template<typename T>
 T KApplicationScopePrivate::nullIfDefault(const Property<T> &prop, const QVariant &variant)
 {
-    const auto value = variant.value<T>();
-    if (value && *value == prop.defaultValue) {
+    using value_type = typename T::value_type;
+    const auto value = variant.value<value_type>();
+    if (variant.isNull() || value == prop.defaultValue) {
         return T();
     }
     return value;
