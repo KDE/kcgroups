@@ -4,9 +4,14 @@
 
 #include "foregroundbooster.h"
 #include <KApplicationScope>
+#include <KApplicationScopeLister>
 #include <QtCore>
+#include <QDBusMessage>
+#include <QDBusPendingCallWatcher>
 #include <abstracttasksmodel.h>
 #include <algorithm>
+#include <qdbusconnection.h>
+#include <QDBusPendingReply>
 
 using namespace TaskManager;
 
@@ -16,8 +21,11 @@ ForegroundBooster::ForegroundBooster(QObject *parent)
     , m_settings(new BoosterSettings(this))
 
 {
+    auto lister = new KApplicationScopeLister(this);
     connect(m_tasksModel, &TasksModel::activeTaskChanged, this, &ForegroundBooster::onActiveWindowChanged);
     connect(m_tasksModel, &TasksModel::rowsAboutToBeRemoved, this, &ForegroundBooster::onWindowRemoved);
+    connect(lister, &KApplicationScopeLister::pathAdded, this,  &ForegroundBooster::onPathAdded);
+    connect(lister, &KApplicationScopeLister::pathRemoved, this,  &ForegroundBooster::onPathRemoved);
 }
 
 ForegroundBooster::~ForegroundBooster()
@@ -96,4 +104,39 @@ void ForegroundBooster::onActiveWindowChanged()
     }
     m_currentPid = pid;
     m_currentAppid = appid;
+}
+
+void ForegroundBooster::onPathAdded(const QString &path, const QString &id)
+{
+    KApplicationScope scope(path, id);
+    if (true) {
+        // in some whitelist
+        auto msg = QDBusMessage::createMethodCall(QStringLiteral("org.kde.Solid.PowerManagement"),
+                                                  QStringLiteral("/org/kde/Solid/PowerManagement/Actions/PowerProfile"),
+                                                  QStringLiteral("org.kde.Solid.PowerManagement.Actions.PowerProfile"),
+                                                  QStringLiteral("holdProfile"));
+        msg.setArguments({QStringLiteral("performance"), QStringLiteral("via foreground booster"), scope.desktopName()});
+        auto watcher = new QDBusPendingCallWatcher(QDBusConnection::sessionBus().asyncCall(msg));
+        connect (watcher, &QDBusPendingCallWatcher::finished, this, [this, path] (QDBusPendingCallWatcher *watcher) {
+            watcher->deleteLater();
+            QDBusPendingReply<unsigned int> reply = *watcher;
+            if (reply.isError()) {
+                return;
+            }
+            m_cookiesByPath.insert(path, reply.value());
+        });
+    }
+}
+
+void ForegroundBooster::onPathRemoved(const QString &path)
+{
+    if (!m_cookiesByPath.contains(path)) {
+        return;
+    }
+    auto msg = QDBusMessage::createMethodCall(QStringLiteral("org.kde.Solid.PowerManagement"),
+                                                  QStringLiteral("/org/kde/Solid/PowerManagement/Actions/PowerProfile"),
+                                                  QStringLiteral("org.kde.Solid.PowerManagement.Actions.PowerProfile"),
+                                                  QStringLiteral("releaseProfile"));
+    msg.setArguments({m_cookiesByPath[path]});
+    QDBusConnection::sessionBus().send(msg);
 }

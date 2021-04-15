@@ -20,6 +20,8 @@ public:
 public Q_SLOTS:
     void onActiveWindowChanged();
     void onWindowRemoved(const QModelIndex &parent, int first, int last);
+    void onPathAdded(const QString &path, const QString &id);
+    void onPathRemoved(const QString &path);
 
 private:
     TaskManager::TasksModel *m_tasksModel;
@@ -28,6 +30,7 @@ private:
     uint m_currentPid;
     QString m_currentAppid;
     QHash<uint, KApplicationScope *> m_appsByPid;
+    QHash<QString, unsigned int> m_cookiesByPath;
 };
 
 #endif // FOREGROUNDBOOSTER_H
