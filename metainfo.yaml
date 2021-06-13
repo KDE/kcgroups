@@ -1,5 +1,5 @@
 maintainer: hchain
-description: control cgroup resources through systemd dbus interface 
+description: Control cgroup resources through systemd dbus interface 
 tier: 1
 type: integration
 platforms:
@@ -12,5 +12,3 @@ libraries:
 cmakename: KF5CGroups
 
 public_lib: true
-group: Frameworks
-subgroup: Tier 1
