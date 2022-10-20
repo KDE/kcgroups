@@ -19,7 +19,7 @@ set(DBUS_INTERFACE_XML_FILES
 
 set_property(SOURCE ${DBUS_INTERFACE_XML_FILES} PROPERTY INCLUDE dbustypes_p.h)
 
-qt5_add_dbus_interfaces(libkcgroups_SRCS ${DBUS_INTERFACE_XML_FILES})
+qt_add_dbus_interfaces(libkcgroups_SRCS ${DBUS_INTERFACE_XML_FILES})
 
 add_library(KF5CGroups ${libkcgroups_SRCS})
 generate_export_header(KF5CGroups BASE_NAME KCGroups)
@@ -36,8 +36,8 @@ target_compile_features(KF5CGroups PUBLIC cxx_std_14)
 
 target_link_libraries(
     KF5CGroups
-    PUBLIC Qt5::Core
-    PRIVATE Qt5::DBus)
+    PUBLIC Qt${QT_MAJOR_VERSION}::Core
+    PRIVATE Qt${QT_MAJOR_VERSION}::DBus)
 
 set_target_properties(
     KF5CGroups
@@ -62,11 +62,11 @@ list(APPEND
 install(
     TARGETS KF5CGroups
     EXPORT KF5CGroupsTargets
-    ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
+    ${KF_INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(
     FILES ${KCGroups_HEADERS}
-    DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/KCGroups
+    DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF}/KCGroups
     COMPONENT Devel)
 
 ecm_qt_install_logging_categories(
@@ -85,8 +85,8 @@ if(BUILD_QCH)
         SOURCES ${KCGroups_HEADERS}
         MD_MAINPAGE "${CMAKE_SOURCE_DIR}/README.md"
         LINK_QCHS
-        Qt5DBus_QCH
-        Qt5Core_QCH
+        Qt${QT_MAJOR_VERSION}DBus_QCH
+        Qt${QT_MAJOR_VERSION}Core_QCH
         INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}
         BLANK_MACROS
             KCGROUPS_EXPORT
