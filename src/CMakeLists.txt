@@ -27,7 +27,7 @@ add_library(KF5::CGroups ALIAS KF5CGroups)
 
 target_include_directories(
     KF5CGroups
-    INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF5}/KCGroups>")
+    INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF}/KCGroups>")
 
 CHECK_INCLUDE_FILE_CXX("optional" _stdOptionalAvailable)
 target_compile_definitions(KF5CGroups PRIVATE $<${_stdOptionalAvailable}:STD_OPTIONAL_AVAILABLE>)
