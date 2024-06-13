@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 
 project(ForegroundBooster)
 
-find_package(ECM 5.73.0 REQUIRED NO_MODULE)
+find_package(ECM 6.0 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
 include(KDEInstallDirs)
@@ -10,7 +10,8 @@ include(KDECompilerSettings)
 include(KDECMakeSettings)
 include(ECMConfiguredInstall)
 
-find_package(KF5 REQUIRED COMPONENTS CGroups Config DBusAddons)
+find_package(KF6 REQUIRED COMPONENTS Config DBusAddons)
+find_package(KF5CGroups REQUIRED)
 find_package(LibTaskManager CONFIG REQUIRED)
 
 if(BUILD_TESTING)
@@ -21,11 +22,11 @@ add_executable(foreground_booster foregroundbooster.cpp foregroundbooster.h boos
 kconfig_add_kcfg_files(foreground_booster boostersettings.kcfgc)
 target_link_libraries(
     foreground_booster
-    Qt5::DBus
+    Qt6::DBus
     PW::LibTaskManager
-    KF5::ConfigCore
-    KF5::ConfigGui
-    KF5::DBusAddons
+    KF6::ConfigCore
+    KF6::ConfigGui
+    KF6::DBusAddons
     KF5::CGroups)
 install(TARGETS foreground_booster ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 
