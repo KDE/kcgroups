@@ -30,6 +30,9 @@ target_link_libraries(
     KF5::CGroups)
 install(TARGETS foreground_booster ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 
-install(FILES org.kde.foreground-booster.desktop DESTINATION ${KDE_INSTALL_AUTOSTARTDIR})
+configure_file(org.kde.foreground-booster.desktop.in ${CMAKE_CURRENT_BINARY_DIR}/org.kde.foreground-booster.desktop @ONLY)
+install(FILES  ${CMAKE_CURRENT_BINARY_DIR}/org.kde.foreground-booster.desktop DESTINATION ${KDE_INSTALL_APPDIR})
+install(FILES  ${CMAKE_CURRENT_BINARY_DIR}/org.kde.foreground-booster.desktop DESTINATION ${KDE_INSTALL_AUTOSTARTDIR})
+
 
 ecm_install_configured_files(INPUT plasma-foreground-booster.service.in DESTINATION ${KDE_INSTALL_SYSTEMDUSERUNITDIR})
