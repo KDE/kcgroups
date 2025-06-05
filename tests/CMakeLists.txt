@@ -1,6 +1,6 @@
 include(ECMMarkAsTest)
-find_package(Qt${QT_MAJOR_VERSION} COMPONENTS Test Quick Qml Widgets)
-if(NOT Qt${QT_MAJOR_VERSION}_FOUND)
+find_package(Qt6 COMPONENTS Test Quick Qml Widgets)
+if(NOT Qt6_FOUND)
   message(STATUS "QML/Test Qt components not found, will not build tests")
   return()
 endif()
@@ -16,4 +16,4 @@ target_link_libraries(
     Qt::Qml
     Qt::Quick
     Qt::Widgets
-    KF5::CGroups)
+    KF6::CGroups)

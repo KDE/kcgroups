@@ -75,7 +75,7 @@ void KApplicationScopeListModelPrivate::handleNewApp(const QString &path, const 
         const auto row = m_apps.indexOf(app);
         if (row >= 0) {
             const auto idx = q_ptr->index(row, 0);
-            emit q_ptr->dataChanged(idx, idx);
+            Q_EMIT q_ptr->dataChanged(idx, idx);
         }
     });
     m_apps.append(app);

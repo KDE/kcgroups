@@ -77,12 +77,12 @@ void KApplicationScopeListerPrivate::handleGetListCallFinished(QDBusPendingCallW
             const auto path = unit.path.path();
             if (!m_appPaths.contains(path)) {
                 m_appPaths.append(path);
-                emit q->pathAdded(path, unit.id);
+                Q_EMIT q->pathAdded(path, unit.id);
                 changes++;
             }
         }
         if (changes > 0) {
-            emit q->pathsChanged(m_appPaths);
+            Q_EMIT q->pathsChanged(m_appPaths);
         }
     }
     call->deleteLater();
@@ -104,8 +104,8 @@ void KApplicationScopeListerPrivate::handleUnitNew(const QString &id, const QDBu
     static const QRegularExpression regex(QRegularExpression::wildcardToRegularExpression(glob));
     if (regex.globalMatch(id).hasNext() && !m_appPaths.contains(pathStr)) {
         m_appPaths.append(pathStr);
-        emit q->pathAdded(pathStr, id);
-        emit q->pathsChanged(m_appPaths);
+        Q_EMIT q->pathAdded(pathStr, id);
+        Q_EMIT q->pathsChanged(m_appPaths);
     }
 }
 
@@ -115,8 +115,8 @@ void KApplicationScopeListerPrivate::handleUnitRemoved(const QString &name, cons
     qCDebug(KCGROUPS_LOG) << "handleUnitRemoved" << name << path.path();
     if (m_appPaths.contains(pathStr)) {
         m_appPaths.removeOne(pathStr);
-        emit q->pathRemoved(pathStr);
-        emit q->pathsChanged(m_appPaths);
+        Q_EMIT q->pathRemoved(pathStr);
+        Q_EMIT q->pathsChanged(m_appPaths);
     }
 }
 
@@ -124,5 +124,5 @@ void KApplicationScopeListerPrivate::setError(KApplicationScopeLister::ErrorCode
 {
     m_lastError = code;
     qCDebug(KCGROUPS_LOG) << "ERROR: " << message;
-    emit q->errorOccurred(m_lastError);
+    Q_EMIT q->errorOccurred(m_lastError);
 }

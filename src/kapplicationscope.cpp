@@ -326,8 +326,8 @@ template<typename T>
 void KApplicationScopePrivate::saveProperty(const Property<T> &prop, const T &opt)
 {
     this->*prop.privateMember = opt;
-    emit(q_ptr->*prop.changedSignal)(opt);
-    emit q_ptr->propertyChanged(prop.systemdName);
+    Q_EMIT(q_ptr->*prop.changedSignal)(opt);
+    Q_EMIT q_ptr->propertyChanged(prop.systemdName);
 }
 
 template<typename T>
@@ -388,8 +388,8 @@ void KApplicationScopePrivate::handleGetAllCallFinished(QDBusPendingCallWatcher 
                 saveIfNull<OptionalQULongLong>(*qullProps[k], v);
             } else if (k == QStringLiteral("ControlGroup")) {
                 m_cgroup = QStringLiteral("/sys/fs/cgroup/systemd") + v.toString();
-                emit q_ptr->cgroupChanged(m_cgroup);
-                emit q_ptr->propertyChanged(k);
+                Q_EMIT q_ptr->cgroupChanged(m_cgroup);
+                Q_EMIT q_ptr->propertyChanged(k);
             }
         }
     }
@@ -412,25 +412,25 @@ void KApplicationScopePrivate::handleGetUnitCallFinished(QDBusPendingCallWatcher
                 if (m_id.isNull()) {
                     m_id = v;
                     parseId();
-                    emit q_ptr->idChanged(m_id);
-                    emit q_ptr->propertyChanged(k);
+                    Q_EMIT q_ptr->idChanged(m_id);
+                    Q_EMIT q_ptr->propertyChanged(k);
                     if (!m_desktopName.isNull()) {
-                        emit q_ptr->desktopNameChanged(m_desktopName);
+                        Q_EMIT q_ptr->desktopNameChanged(m_desktopName);
                     }
                 }
             } else if (k == QStringLiteral("Description")) {
                 if (v != m_id) {
                     m_description = v;
-                    emit q_ptr->descriptionChanged(v);
-                    emit q_ptr->propertyChanged(k);
+                    Q_EMIT q_ptr->descriptionChanged(v);
+                    Q_EMIT q_ptr->propertyChanged(k);
                 }
             } else if (k == QStringLiteral("SourcePath")) {
                 if (v.endsWith(QStringLiteral(".desktop"))) {
                     m_desktopFilePath = v;
                     m_desktopName = QFileInfo(v).fileName().chopped(strlen(".desktop"));
-                    emit q_ptr->desktopFilePathChanged(v);
-                    emit q_ptr->propertyChanged(k);
-                    emit q_ptr->desktopNameChanged(m_desktopName);
+                    Q_EMIT q_ptr->desktopFilePathChanged(v);
+                    Q_EMIT q_ptr->propertyChanged(k);
+                    Q_EMIT q_ptr->desktopNameChanged(m_desktopName);
                 }
             }
         }
@@ -446,5 +446,5 @@ void KApplicationScopePrivate::setError(KApplicationScope::ErrorCode code, const
     } else {
         qCDebug(KCGROUPS_LOG) << "ERROR: " << message;
     }
-    emit q_ptr->errorOccurred(m_lastError);
+    Q_EMIT q_ptr->errorOccurred(m_lastError);
 }

@@ -21,27 +21,27 @@ set_property(SOURCE ${DBUS_INTERFACE_XML_FILES} PROPERTY INCLUDE dbustypes_p.h)
 
 qt_add_dbus_interfaces(libkcgroups_SRCS ${DBUS_INTERFACE_XML_FILES})
 
-add_library(KF5CGroups ${libkcgroups_SRCS})
-generate_export_header(KF5CGroups BASE_NAME KCGroups)
-add_library(KF5::CGroups ALIAS KF5CGroups)
+add_library(KF6CGroups ${libkcgroups_SRCS})
+generate_export_header(KF6CGroups BASE_NAME KCGroups)
+add_library(KF6::CGroups ALIAS KF6CGroups)
 
 target_include_directories(
-    KF5CGroups
+    KF6CGroups
     INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF}/KCGroups>")
 
 CHECK_INCLUDE_FILE_CXX("optional" _stdOptionalAvailable)
-target_compile_definitions(KF5CGroups PRIVATE $<${_stdOptionalAvailable}:STD_OPTIONAL_AVAILABLE>)
+target_compile_definitions(KF6CGroups PRIVATE $<${_stdOptionalAvailable}:STD_OPTIONAL_AVAILABLE>)
 
-target_compile_features(KF5CGroups PUBLIC cxx_std_14)
+target_compile_features(KF6CGroups PUBLIC cxx_std_14)
 
 target_link_libraries(
-    KF5CGroups
-    PUBLIC Qt${QT_MAJOR_VERSION}::Core
-    PRIVATE Qt${QT_MAJOR_VERSION}::DBus)
+    KF6CGroups
+    PUBLIC Qt6::Core
+    PRIVATE Qt6::DBus)
 
 set_target_properties(
-    KF5CGroups
-    PROPERTIES VERSION ${KCGROUPS_VERSION_STRING}
+    KF6CGroups
+    PROPERTIES VERSION ${KCGROUPS_VERSION}
                SOVERSION ${KCGROUPS_SOVERSION}
                EXPORT_NAME CGroups)
 
@@ -60,8 +60,8 @@ list(APPEND
     ${CMAKE_CURRENT_BINARY_DIR}/kcgroups_export.h)
 
 install(
-    TARGETS KF5CGroups
-    EXPORT KF5CGroupsTargets
+    TARGETS KF6CGroups
+    EXPORT KF6CGroupsTargets
     ${KF_INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(
@@ -77,16 +77,16 @@ ecm_qt_install_logging_categories(
 
 if(BUILD_QCH)
     ecm_add_qch(
-        KF5CGroups_QCH
+        KF6CGroups_QCH
         NAME KCGroups
-        BASE_NAME KF5CGroups
-        VERSION ${KF5_VERSION}
+        BASE_NAME KF6CGroups
+        VERSION ${KF6_VERSION}
         ORG_DOMAIN org.kde
         SOURCES ${KCGroups_HEADERS}
         MD_MAINPAGE "${CMAKE_SOURCE_DIR}/README.md"
         LINK_QCHS
-        Qt${QT_MAJOR_VERSION}DBus_QCH
-        Qt${QT_MAJOR_VERSION}Core_QCH
+        Qt6DBus_QCH
+        Qt6Core_QCH
         INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}
         BLANK_MACROS
             KCGROUPS_EXPORT
@@ -102,11 +102,11 @@ ecm_generate_pri_file(
     BASE_NAME
     KCGroups
     LIB_NAME
-    KF5CGroups
+    KF6CGroups
     DEPS
     "dbus"
     FILENAME_VAR
     PRI_FILENAME
     INCLUDE_INSTALL_DIR
-    ${KDE_INSTALL_INCLUDEDIR_KF5}/KCGroups)
+    ${KDE_INSTALL_INCLUDEDIR_KF6}/KCGroups)
 install(FILES ${PRI_FILENAME} DESTINATION ${ECM_MKSPECS_INSTALL_DIR})

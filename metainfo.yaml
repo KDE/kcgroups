@@ -8,7 +8,7 @@ portingAid: false
 deprecated: false
 libraries:
  - qmake: KCGroups
-   cmake: "KF5::CGroups"
-cmakename: KF5CGroups
+   cmake: "KF6::CGroups"
+cmakename: KF6CGroups
 
 public_lib: true
