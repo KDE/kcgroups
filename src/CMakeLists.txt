@@ -80,7 +80,7 @@ if(BUILD_QCH)
         KF6CGroups_QCH
         NAME KCGroups
         BASE_NAME KF6CGroups
-        VERSION ${KF6_VERSION}
+        VERSION ${KF_VERSION}
         ORG_DOMAIN org.kde
         SOURCES ${KCGroups_HEADERS}
         MD_MAINPAGE "${CMAKE_SOURCE_DIR}/README.md"
